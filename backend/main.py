@@ -1,8 +1,11 @@
 from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from psycopg_pool import AsyncConnectionPool
-from settings import settings
+
 import database
+from routers import players, stats, teams
+from settings import settings
 
 
 @asynccontextmanager
@@ -13,7 +16,13 @@ async def lifespan(app: FastAPI):
     await database.pool.close()
     # Shutdown Code
 
+
 app = FastAPI(lifespan=lifespan)
+
+app.include_router(teams.router)
+app.include_router(players.router)
+app.include_router(stats.router)
+
 
 @app.get("/")
 def root():
