@@ -1,10 +1,38 @@
-# Python-generated files
-__pycache__/
-*.py[oc]
-build/
-dist/
-wheels/
-*.egg-info
+# Environment variables - never commit these
+.env
+.env.*
+!.env.example
 
-# Virtual environments
-.venv
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+*.egg-info/
+dist/
+build/
+
+# uv
+.python-version
+
+# Node / Svelte frontend
+node_modules/
+.svelte-kit/
+frontend/build/
+frontend/dist/
+
+# Data Samples
+data_samples/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose.override.yml

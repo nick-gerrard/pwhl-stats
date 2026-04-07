@@ -1,0 +1,85 @@
+Teams:
+    api_id
+    abbreviation
+    Name
+    Established
+    City
+
+Roster
+    player_id
+    team_id
+    season_id
+    player_number
+
+Season
+    api_id
+    Year
+    Start_Date
+    End_Date
+
+Playoff
+    Year
+    Start_Date
+    End_Date
+    (
+        Placeholder - this is way more complex than I initially thought. We need a method of storing:
+    - Team seeds
+    - Results Per Game/Round
+    - Stats per game/round/tournament
+    - Winners/Losers
+    In fact, this is practically an entire second database schema to itself
+    )
+
+Players
+    api_id
+    Name
+    Height
+    Weight
+    Position
+
+Games
+    api_id
+    season_id
+    playoff_id (nullable)
+    HomeTeam (team_id)
+    status
+    VisitingTeam (team_id)
+    Date
+    Home_Score
+    Away_Score
+
+Game_Periods
+    Game_id
+    period
+    Home_Score
+    Away_Score
+
+Skater_stats
+    team_id
+    player_id
+    season_id
+    Goals 
+    Assists
+    Avg_TOI
+
+
+Goalie_stats
+    team_id
+    player_id
+    season_id
+    GP
+    Wins
+    Shutouts
+    SV_pctg
+    Total_Saves
+
+Standings
+    team_id
+    season_id
+    Wins
+    Losees
+    OT_W
+    OT_L
+    Shootout_W
+    Shootout_L
+    GamesPlayed
