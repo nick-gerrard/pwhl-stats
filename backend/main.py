@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from psycopg_pool import AsyncConnectionPool
 
 import database
-from routers import players, stats, teams
+from routers import games, players, standings, stats, teams
 from settings import settings
 
 
@@ -22,6 +22,8 @@ app = FastAPI(lifespan=lifespan)
 app.include_router(teams.router)
 app.include_router(players.router)
 app.include_router(stats.router)
+app.include_router(standings.router)
+app.include_router(games.router)
 
 
 @app.get("/")
