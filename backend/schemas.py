@@ -23,6 +23,7 @@ class Player(BaseModel):
 
 
 class SkaterStats(BaseModel):
+    player_id: int
     first_name: str
     last_name: str
     team_name: str
@@ -31,13 +32,60 @@ class SkaterStats(BaseModel):
     shots: int
 
 
+class PlayerInfo(BaseModel):
+    first_name: str
+    last_name: str
+    team_name: str
+    games_played: int
+    goals: int
+    assists: int
+    pim: int
+    plus_minus: int
+    shots: int
+    avg_toi: str | None
+    pp_goals: int
+    sh_goals: int
+    gw_goals: int
+    height: int | None
+    weight: int | None
+    birthdate: date | None
+    nationality: str | None
+    shoots: str | None
+    position: str | None
+    active: bool
+
+
 class GoalieStats(BaseModel):
+    player_id: int
     first_name: str
     last_name: str
     team_name: str
     wins: int
     shutouts: int
     save_percentage: float
+
+class GoalieInfo(BaseModel):
+    first_name: str
+    last_name: str
+    team_name: str
+    games_played: int
+    wins: int
+    losses: int
+    ot_losses: int
+    shutouts: int
+    shots_against: int
+    goals_against: int
+    save_percentage: float | None
+    gaa: float | None
+    minutes_played: int
+    height: int | None
+    weight: int | None
+    birthdate: date | None
+    nationality: str | None
+    shoots: str | None
+    position: str | None
+    active: bool
+
 
 
 class Standing(BaseModel):
