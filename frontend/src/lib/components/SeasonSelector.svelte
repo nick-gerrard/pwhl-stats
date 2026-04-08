@@ -21,6 +21,6 @@
 >
 	<option value="">Current Season</option>
 	{#each seasons as season}
-		<option value={season.id}>{season.name}</option>
+		<option value={String(season.id)}>{season.name}</option>
 	{/each}
 </select>

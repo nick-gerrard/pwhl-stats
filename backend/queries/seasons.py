@@ -9,7 +9,7 @@ async def get_seasons(conn: AsyncConnection) -> list[dict]:
             SELECT id, name, season_type
             FROM seasons
             WHERE season_type != 'preseason'
-            ORDER BY id DESC
+            ORDER BY start_date DESC
             """
         )
         return await cur.fetchall()

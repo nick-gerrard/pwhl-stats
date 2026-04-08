@@ -5,15 +5,16 @@
 
 	let { data }: { data: PageData } = $props();
 
+	const WINS_NEEDED = 3; // PWHL uses best-of-5 throughout
+
 	function seriesWinner(s: PlayoffSeries): 'team1' | 'team2' | null {
-		const needed = s.series_name.toLowerCase().includes('final') && !s.series_name.toLowerCase().includes('semi') ? 4 : 3;
-		if (s.team1_wins >= needed) return 'team1';
-		if (s.team2_wins >= needed) return 'team2';
+		if (s.team1_wins >= WINS_NEEDED) return 'team1';
+		if (s.team2_wins >= WINS_NEEDED) return 'team2';
 		return null;
 	}
 
-	function winPips(wins: number, needed: number) {
-		return Array.from({ length: needed }, (_, i) => i < wins);
+	function winPips(wins: number) {
+		return Array.from({ length: WINS_NEEDED }, (_, i) => i < wins);
 	}
 </script>
 
@@ -45,7 +46,6 @@
 				<div class="space-y-4">
 					{#each round.series as series}
 						{@const winner = seriesWinner(series)}
-						{@const needed = series.series_name.toLowerCase().includes('final') && !series.series_name.toLowerCase().includes('semi') ? 4 : 3}
 						<div class="overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900">
 							<div class="border-b border-zinc-800 px-3 py-1.5">
 								<span class="text-xs font-medium text-zinc-500">Series {series.series_letter}</span>
@@ -60,7 +60,7 @@
 									{series.team1.name}
 								</span>
 								<div class="flex gap-1">
-									{#each winPips(series.team1_wins, needed) as filled}
+									{#each winPips(series.team1_wins) as filled}
 										<div class="h-2.5 w-2.5 rounded-full {filled ? 'bg-pwhl-light' : 'bg-zinc-700'}"></div>
 									{/each}
 								</div>
@@ -78,7 +78,7 @@
 									{series.team2.name}
 								</span>
 								<div class="flex gap-1">
-									{#each winPips(series.team2_wins, needed) as filled}
+									{#each winPips(series.team2_wins) as filled}
 										<div class="h-2.5 w-2.5 rounded-full {filled ? 'bg-pwhl-light' : 'bg-zinc-700'}"></div>
 									{/each}
 								</div>
