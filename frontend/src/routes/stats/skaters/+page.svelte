@@ -3,6 +3,7 @@
 	import type { PageData } from './$types';
 	import type { PlayerInfo } from '$lib/types';
 	import Pagination from '$lib/components/Pagination.svelte';
+	import SeasonSelector from '$lib/components/SeasonSelector.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -103,17 +104,20 @@
 
 <div class="mb-6 flex items-center justify-between">
 	<h1 class="text-2xl font-bold">Skater Stats</h1>
-	<select
-		bind:value={teamFilter}
-		onchange={() => (currentPage = 1)}
-		class="rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
-			focus:border-pwhl-light focus:outline-none"
-	>
-		<option value="">All Teams</option>
-		{#each teams as team}
-			<option value={team}>{team}</option>
-		{/each}
-	</select>
+	<div class="flex gap-2">
+		<SeasonSelector seasons={data.regularSeasons} />
+		<select
+			bind:value={teamFilter}
+			onchange={() => (currentPage = 1)}
+			class="rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
+				focus:border-pwhl-light focus:outline-none"
+		>
+			<option value="">All Teams</option>
+			{#each teams as team}
+				<option value={team}>{team}</option>
+			{/each}
+		</select>
+	</div>
 </div>
 
 <div class="overflow-x-auto rounded-lg border border-zinc-800">

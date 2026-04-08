@@ -9,6 +9,7 @@ router = APIRouter(prefix="/standings", tags=["standings"])
 
 
 @router.get("/", response_model=list[Standing])
-async def standings(conn: AsyncConnection = Depends(get_conn)):
-    season_id, _ = await get_current_season(conn)
+async def standings(season_id: int | None = None, conn: AsyncConnection = Depends(get_conn)):
+    if season_id is None:
+        season_id, _ = await get_current_season(conn)
     return await get_standings(conn, season_id)

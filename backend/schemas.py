@@ -3,6 +3,12 @@ from datetime import date
 from pydantic import BaseModel
 
 
+class Season(BaseModel):
+    id: int
+    name: str
+    season_type: str
+
+
 class Team(BaseModel):
     id: int
     api_id: int

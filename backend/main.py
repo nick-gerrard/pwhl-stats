@@ -9,7 +9,7 @@ from psycopg_pool import AsyncConnectionPool
 
 import database
 from ingestions.run import run_all
-from routers import games, players, playoffs, standings, stats, teams
+from routers import games, players, playoffs, seasons, standings, stats, teams
 from settings import settings
 
 
@@ -41,6 +41,7 @@ app.include_router(stats.router)
 app.include_router(standings.router)
 app.include_router(games.router)
 app.include_router(playoffs.router)
+app.include_router(seasons.router)
 
 
 @app.get("/")
