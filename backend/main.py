@@ -1,10 +1,14 @@
+import asyncio
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
+from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from psycopg_pool import AsyncConnectionPool
 
 import database
+from ingestions.run import run_all
 from routers import games, players, standings, stats, teams
 from settings import settings
 
@@ -13,7 +17,12 @@ from settings import settings
 async def lifespan(app: FastAPI):
     database.pool = AsyncConnectionPool(conninfo=settings.database_url, open=False)
     await database.pool.open()
+
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(run_all, CronTrigger(hour=4, minute=0))
+    scheduler.start()
     yield
+    scheduler.shutdown()
     await database.pool.close()
     # Shutdown Code
 
@@ -32,3 +41,11 @@ app.include_router(games.router)
 @app.get("/")
 def root():
     return {"status": "ok"}
+
+
+@app.post("/admin/ingest")
+async def trigger_ingestion(x_admin_token: str = Header(...)):
+    if x_admin_token != settings.admin_token:
+        raise HTTPException(status_code=403)
+    asyncio.create_task(run_all())
+    return {"status": "ingestion started"}
