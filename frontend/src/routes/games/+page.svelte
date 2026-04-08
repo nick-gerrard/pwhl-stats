@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SeasonSelector from '$lib/components/SeasonSelector.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -59,16 +60,19 @@
 
 <div class="mb-6 flex items-center justify-between">
 	<h1 class="text-2xl font-bold">Schedule & Scores</h1>
-	<select
-		bind:value={teamFilter}
-		class="rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
-			focus:border-pwhl-light focus:outline-none"
-	>
-		<option value="">All Teams</option>
-		{#each teams as team}
-			<option value={team}>{team}</option>
-		{/each}
-	</select>
+	<div class="flex gap-2">
+		<SeasonSelector seasons={data.regularSeasons} />
+		<select
+			bind:value={teamFilter}
+			class="rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
+				focus:border-pwhl-light focus:outline-none"
+		>
+			<option value="">All Teams</option>
+			{#each teams as team}
+				<option value={team}>{team}</option>
+			{/each}
+		</select>
+	</div>
 </div>
 
 {#snippet gameCard(game: (typeof data.games)[0], highlight: boolean)}

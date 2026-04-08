@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SeasonSelector from '$lib/components/SeasonSelector.svelte';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
@@ -8,7 +9,10 @@
 	<title>Standings — PWHL Stats</title>
 </svelte:head>
 
-<h1 class="mb-6 text-2xl font-bold">Standings</h1>
+<div class="mb-6 flex items-center justify-between">
+	<h1 class="text-2xl font-bold">Standings</h1>
+	<SeasonSelector seasons={data.regularSeasons} />
+</div>
 
 <div class="overflow-x-auto rounded-lg border border-zinc-800">
 	<table class="w-full text-sm">

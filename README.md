@@ -133,6 +133,6 @@ pwhl-stats/
 - [ ] **404 handling** — proper error pages for missing players/games
 
 ### Deployment
-- [ ] Linode Nanode (1GB) with Caddy reverse proxy
+- [x] Linode Nanode (1GB) with nginx reverse proxy, deployed at https://pwhl.nickgerrard.dev
 - [ ] systemd service for the API
 - [ ] Nightly cron for data ingestion

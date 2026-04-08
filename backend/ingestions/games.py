@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 import httpx
 
-from ingestions.db import get_connection, get_current_season, get_team_id_map
+from ingestions.db import get_all_seasons, get_connection, get_team_id_map
 
 BASE_URL = "https://lscluster.hockeytech.com/feed/index.php"
 AUTH = "key=446521baf8c38984&client_code=pwhl"
@@ -21,62 +21,62 @@ def parse_status(game: dict) -> str:
 
 async def run():
     async with get_connection() as conn:
-        season_id, season_api_id = await get_current_season(conn)
+        seasons = await get_all_seasons(conn)
         team_id_map = await get_team_id_map(conn)
-
-        url = f"{BASE_URL}?feed=modulekit&view=schedule&season_id={season_api_id}&{AUTH}"
+        total = 0
 
         async with httpx.AsyncClient() as client:
-            response = await client.get(url)
-            response.raise_for_status()
+            for season_id, season_api_id, _season_type in seasons:
+                url = f"{BASE_URL}?feed=modulekit&view=schedule&season_id={season_api_id}&{AUTH}"
+                response = await client.get(url)
+                response.raise_for_status()
+                games = response.json()["SiteKit"]["Schedule"]
 
-        games = response.json()["SiteKit"]["Schedule"]
+                for game in games:
+                    home_team_id = team_id_map.get(game["home_team"])
+                    visiting_team_id = team_id_map.get(game["visiting_team"])
 
-        for game in games:
-            home_team_id = team_id_map.get(game["home_team"])
-            visiting_team_id = team_id_map.get(game["visiting_team"])
+                    if home_team_id is None or visiting_team_id is None:
+                        print(f"Skipping game {game['game_id']} — unknown team")
+                        continue
 
-            if home_team_id is None or visiting_team_id is None:
-                print(f"Skipping game {game['game_id']} — unknown team")
-                continue
+                    status = parse_status(game)
+                    home_score = int(game["home_goal_count"]) if status == "final" else None
+                    away_score = int(game["visiting_goal_count"]) if status == "final" else None
 
-            status = parse_status(game)
-            home_score = int(game["home_goal_count"]) if status == "final" else None
-            away_score = int(game["visiting_goal_count"]) if status == "final" else None
+                    date_played = datetime.fromisoformat(
+                        game["GameDateISO8601"]
+                    ).astimezone(timezone.utc).date()
 
-            # Parse the ISO date from the schedule
-            date_played = datetime.fromisoformat(
-                game["GameDateISO8601"]
-            ).astimezone(timezone.utc).date()
-
-            await conn.execute(
-                """
-                INSERT INTO games (
-                    api_id, season_id, home_team_id, visiting_team_id,
-                    home_score, away_score, date, status, venue
-                )
-                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-                ON CONFLICT (api_id) DO UPDATE SET
-                    home_score = EXCLUDED.home_score,
-                    away_score = EXCLUDED.away_score,
-                    status = EXCLUDED.status,
-                    venue = EXCLUDED.venue
-                """,
-                (
-                    game["game_id"],
-                    season_id,
-                    home_team_id,
-                    visiting_team_id,
-                    home_score,
-                    away_score,
-                    date_played,
-                    status,
-                    game.get("venue_name"),
-                ),
-            )
+                    await conn.execute(
+                        """
+                        INSERT INTO games (
+                            api_id, season_id, home_team_id, visiting_team_id,
+                            home_score, away_score, date, status, venue
+                        )
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        ON CONFLICT (api_id) DO UPDATE SET
+                            home_score = EXCLUDED.home_score,
+                            away_score = EXCLUDED.away_score,
+                            status = EXCLUDED.status,
+                            venue = EXCLUDED.venue
+                        """,
+                        (
+                            game["game_id"],
+                            season_id,
+                            home_team_id,
+                            visiting_team_id,
+                            home_score,
+                            away_score,
+                            date_played,
+                            status,
+                            game.get("venue_name"),
+                        ),
+                    )
+                    total += 1
 
         await conn.commit()
-        print(f"Games ingestion complete — {len(games)} games processed.")
+        print(f"Games ingestion complete — {total} games processed.")
 
 
 if __name__ == "__main__":

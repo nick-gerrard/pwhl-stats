@@ -4,6 +4,7 @@
 	const links = [
 		{ href: '/', label: 'Standings' },
 		{ href: '/games', label: 'Games' },
+		{ href: '/playoffs', label: 'Playoffs' },
 		{ href: '/stats/skaters', label: 'Skaters' },
 		{ href: '/stats/goalies', label: 'Goalies' },
 		{ href: '/about', label: 'About' }

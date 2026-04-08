@@ -76,6 +76,33 @@ export interface GoalieInfo {
 	active: boolean;
 }
 
+export interface Season {
+	id: number;
+	name: string;
+	season_type: string;
+}
+
+export interface PlayoffTeam {
+	name: string;
+	code: string;
+}
+
+export interface PlayoffSeries {
+	series_letter: string;
+	series_name: string;
+	team1: PlayoffTeam;
+	team2: PlayoffTeam;
+	team1_wins: number;
+	team2_wins: number;
+	is_active: boolean;
+}
+
+export interface PlayoffRound {
+	round_number: number;
+	round_name: string;
+	series: PlayoffSeries[];
+}
+
 export interface Game {
 	home_team: string;
 	visiting_team: string;

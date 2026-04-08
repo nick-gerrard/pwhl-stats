@@ -3,6 +3,12 @@ from datetime import date
 from pydantic import BaseModel
 
 
+class Season(BaseModel):
+    id: int
+    name: str
+    season_type: str
+
+
 class Team(BaseModel):
     id: int
     api_id: int
@@ -107,3 +113,24 @@ class Game(BaseModel):
     away_score: int | None
     date: date
     status: str
+
+
+class PlayoffTeam(BaseModel):
+    name: str
+    code: str
+
+
+class PlayoffSeries(BaseModel):
+    series_letter: str
+    series_name: str
+    team1: PlayoffTeam
+    team2: PlayoffTeam
+    team1_wins: int
+    team2_wins: int
+    is_active: bool
+
+
+class PlayoffRound(BaseModel):
+    round_number: int
+    round_name: str
+    series: list[PlayoffSeries]
