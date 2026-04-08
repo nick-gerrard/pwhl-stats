@@ -93,11 +93,11 @@ jobs:
 
       - name: Deploy backend
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} '
-            cd ~/pwhl-stats
-            git pull
-            cd backend
-            uv sync
-            uv run alembic upgrade head
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash -e -l -c "
+            cd ~/pwhl-stats &&
+            git pull &&
+            cd backend &&
+            uv sync &&
+            uv run alembic upgrade head &&
             sudo systemctl restart pwhl-api
-          '
+          "'
