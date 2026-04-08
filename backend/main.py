@@ -32,7 +32,7 @@ app = FastAPI(lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5173", "https://pwhl.nickgerrard.dev"],
-    allow_methods=["GET"],
+    allow_methods=["GET", "POST"],
 )
 
 app.include_router(teams.router)
