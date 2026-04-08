@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_API_URL } from '$env/static/public';
+	import { page } from '$app/state';
 	import type { PageData } from './$types';
 	import type { PlayerInfo } from '$lib/types';
 	import Pagination from '$lib/components/Pagination.svelte';
@@ -72,7 +73,9 @@
 		modalOpen = true;
 		loading = true;
 		selectedPlayer = null;
-		const res = await fetch(`${PUBLIC_API_URL}/stats/skaters/${player_id}`);
+		const seasonId = page.url.searchParams.get('season_id');
+		const query = seasonId ? `?season_id=${seasonId}` : '';
+		const res = await fetch(`${PUBLIC_API_URL}/stats/skaters/${player_id}${query}`);
 		selectedPlayer = await res.json();
 		loading = false;
 	}
