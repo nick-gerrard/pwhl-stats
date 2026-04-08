@@ -29,7 +29,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.add_middleware(CORSMiddleware, allow_origins=["http://localhost:5173"], allow_methods=["GET"])
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "https://pwhl.nickgerrard.dev"],
+    allow_methods=["GET"],
+)
 
 app.include_router(teams.router)
 app.include_router(players.router)
