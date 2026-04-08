@@ -141,7 +141,7 @@
 						PTS{sortIndicator('points')}
 					</button>
 				</th>
-				<th class="px-4 py-3 text-center font-medium">
+				<th class="hidden px-4 py-3 text-center font-medium sm:table-cell">
 					<button onclick={() => setSort('shots')} class="hover:text-white">
 						SOG{sortIndicator('shots')}
 					</button>
@@ -165,7 +165,7 @@
 					<td class="px-4 py-3 text-center font-bold text-white"
 						>{skater.goals + skater.assists}</td
 					>
-					<td class="px-4 py-3 text-center text-zinc-300">{skater.shots}</td>
+					<td class="hidden px-4 py-3 text-center text-zinc-300 sm:table-cell">{skater.shots}</td>
 				</tr>
 			{/each}
 		</tbody>

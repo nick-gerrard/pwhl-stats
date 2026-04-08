@@ -131,7 +131,7 @@
 						W{sortIndicator('wins')}
 					</button>
 				</th>
-				<th class="px-4 py-3 text-center font-medium">
+				<th class="hidden px-4 py-3 text-center font-medium sm:table-cell">
 					<button onclick={() => setSort('shutouts')} class="hover:text-white">
 						SO{sortIndicator('shutouts')}
 					</button>
@@ -156,7 +156,7 @@
 					>
 					<td class="px-4 py-3 text-zinc-400">{goalie.team_name}</td>
 					<td class="px-4 py-3 text-center text-zinc-300">{goalie.wins}</td>
-					<td class="px-4 py-3 text-center text-zinc-300">{goalie.shutouts}</td>
+					<td class="hidden px-4 py-3 text-center text-zinc-300 sm:table-cell">{goalie.shutouts}</td>
 					<td class="px-4 py-3 text-center font-bold text-white"
 						>{formatSvPct(goalie.save_percentage)}</td
 					>
