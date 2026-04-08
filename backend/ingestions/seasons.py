@@ -18,20 +18,29 @@ async def run():
         seasons = season_response.json()["SiteKit"]["Seasons"]
 
         for season in seasons:
+            if season["career"] == "0":
+                season_type = "preseason"
+            elif season["playoff"] == "1":
+                season_type = "playoff"
+            else:
+                season_type = "regular"
+
             await conn.execute(
                 """
-                INSERT INTO seasons (api_id, name, start_date, end_date)
-                VALUES (%s, %s, %s, %s)
+                INSERT INTO seasons (api_id, name, start_date, end_date, season_type)
+                VALUES (%s, %s, %s, %s, %s)
                 ON CONFLICT (api_id) DO UPDATE SET
                     name = EXCLUDED.name,
                     start_date = EXCLUDED.start_date,
-                    end_date = EXCLUDED.end_date
+                    end_date = EXCLUDED.end_date,
+                    season_type = EXCLUDED.season_type
             """,
                 (
                     season["season_id"],
                     season["season_name"],
                     date.fromisoformat(season["start_date"]),
                     date.fromisoformat(season["end_date"]),
+                    season_type,
                 ),
             )
         await conn.commit()

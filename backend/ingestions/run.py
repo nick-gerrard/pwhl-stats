@@ -10,7 +10,7 @@ Order matters — foreign keys require parent tables to be populated first:
 
 import asyncio
 
-from ingestions import games, goalie_stats, roster, seasons, skater_stats, standings, teams
+from ingestions import games, goalie_stats, playoffs, roster, seasons, skater_stats, standings, teams
 
 
 async def run_all():
@@ -38,6 +38,9 @@ async def run_all():
 
     print("--- Ingesting standings ---")
     await standings.run()
+
+    print("--- Ingesting playoffs ---")
+    await playoffs.run()
 
     print("=== All ingestion complete ===")
 
