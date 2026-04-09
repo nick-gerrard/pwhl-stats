@@ -1,8 +1,12 @@
 <script lang="ts">
+	import { PUBLIC_API_URL } from '$env/static/public';
 	import SeasonSelector from '$lib/components/SeasonSelector.svelte';
+	import type { LiveGame } from '$lib/types';
 	import type { PageData } from './$types';
 
 	let { data }: { data: PageData } = $props();
+
+	let liveScores: Record<string, LiveGame> = $state({});
 
 	let teamFilter = $state('');
 
@@ -48,10 +52,30 @@
 		});
 	}
 
+	function formatTime(startTime: string | null) {
+		if (!startTime) return null;
+		return new Date(startTime).toLocaleTimeString('en-CA', {
+			hour: 'numeric',
+			minute: '2-digit',
+			timeZoneName: 'short'
+		});
+	}
+
 	function formatScore(home: number | null, away: number | null) {
 		if (home === null || away === null) return null;
 		return `${home} – ${away}`;
 	}
+
+	$effect(() => {
+		if (todayGames.length === 0) return;
+
+		const es = new EventSource(`${PUBLIC_API_URL}/live`);
+		es.onmessage = (e) => {
+			liveScores = JSON.parse(e.data);
+		};
+
+		return () => es.close();
+	});
 </script>
 
 <svelte:head>
@@ -75,26 +99,86 @@
 	</div>
 </div>
 
+{#snippet teamName(name: string, logo: string | null, align: 'left' | 'right')}
+	<div class="flex flex-1 items-center gap-2 {align === 'right' ? 'flex-row-reverse' : ''}">
+		{#if logo}
+			<img src={logo} alt={name} class="h-8 w-8 object-contain" />
+		{/if}
+		<span class="font-medium text-white">{name}</span>
+	</div>
+{/snippet}
+
+{#snippet liveGameCard(game: (typeof data.games)[0])}
+	{@const live = liveScores[String(game.api_id)]}
+	{@const score = formatScore(game.home_score, game.away_score)}
+	<div class="rounded-lg border px-4 py-3
+		{live?.status === 'In Progress' ? 'border-pwhl bg-pwhl-dark/20' : 'border-zinc-800 bg-zinc-900'}">
+		<div class="flex items-center gap-4">
+			<div class="flex flex-1 items-center justify-end gap-2">
+				{#if live?.power_play.home}
+					<span class="rounded bg-pwhl-light/20 px-1.5 py-0.5 text-xs font-semibold text-pwhl-light">PP</span>
+				{/if}
+				{@render teamName(game.home_team, game.home_team_logo, 'right')}
+			</div>
+			<div class="flex w-36 shrink-0 flex-col items-center">
+				{#if live}
+					<span class="text-lg font-bold text-white">{live.home_score} – {live.visitor_score}</span>
+					{#if live.status === 'In Progress'}
+						<div class="mt-0.5 flex items-center gap-1.5">
+							<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500"></span>
+							<span class="text-xs text-zinc-300">{live.period} · {live.clock}</span>
+						</div>
+					{:else}
+						<span class="mt-0.5 rounded bg-zinc-700 px-2 py-0.5 text-xs text-zinc-300">Final</span>
+					{/if}
+				{:else if score}
+					<span class="text-lg font-bold text-white">{score}</span>
+					<span class="mt-0.5 rounded bg-zinc-700 px-2 py-0.5 text-xs text-zinc-300">{game.status}</span>
+				{:else}
+					<span class="text-zinc-400">vs</span>
+					{@const time = formatTime(game.start_time)}
+					{#if time}<span class="mt-0.5 text-xs text-zinc-300">{time}</span>{/if}
+				{/if}
+			</div>
+			<div class="flex flex-1 items-center gap-2">
+				{@render teamName(game.visiting_team, game.visiting_team_logo, 'left')}
+				{#if live?.power_play.visitor}
+					<span class="rounded bg-pwhl-light/20 px-1.5 py-0.5 text-xs font-semibold text-pwhl-light">PP</span>
+				{/if}
+			</div>
+		</div>
+		{#if live?.status === 'In Progress'}
+			<div class="mt-2 text-center text-xs text-zinc-500">
+				{live.home_shots} – {live.visitor_shots} SOG
+			</div>
+		{/if}
+	</div>
+{/snippet}
+
 {#snippet gameCard(game: (typeof data.games)[0], highlight: boolean)}
 	{@const score = formatScore(game.home_score, game.away_score)}
 	<div class="rounded-lg border px-4 py-3
 		{highlight ? 'border-pwhl bg-pwhl-dark/20' : 'border-zinc-800 bg-zinc-900'}">
 		<div class="flex items-center gap-4">
-			<span class="flex-1 text-right font-medium text-white">{game.home_team}</span>
-			<div class="flex w-28 flex-col items-center">
+			<div class="flex flex-1 justify-end">
+				{@render teamName(game.home_team, game.home_team_logo, 'right')}
+			</div>
+			<div class="flex w-36 shrink-0 flex-col items-center">
 				{#if score}
 					<span class="text-lg font-bold text-white">{score}</span>
+					<span class="mt-0.5 rounded px-2 py-0.5 text-xs
+						{game.status === 'Final' ? 'bg-zinc-700 text-zinc-300' : 'bg-pwhl-dark/60 text-pwhl-light'}">
+						{game.status}
+					</span>
 				{:else}
-					<span class="text-zinc-500">vs</span>
+					<span class="text-zinc-400">vs</span>
+					{@const time = formatTime(game.start_time)}
+					{#if time}<span class="mt-0.5 text-xs text-zinc-300">{time}</span>{/if}
 				{/if}
-				<span class="mt-0.5 rounded px-2 py-0.5 text-xs
-					{game.status === 'Final'
-						? 'bg-zinc-700 text-zinc-300'
-						: 'bg-pwhl-dark/60 text-pwhl-light'}">
-					{game.status}
-				</span>
 			</div>
-			<span class="flex-1 font-medium text-white">{game.visiting_team}</span>
+			<div class="flex flex-1">
+				{@render teamName(game.visiting_team, game.visiting_team_logo, 'left')}
+			</div>
 		</div>
 	</div>
 {/snippet}
@@ -123,7 +207,7 @@
 			</h2>
 			<div class="space-y-2">
 				{#each todayGames as game}
-					{@render gameCard(game, true)}
+					{@render liveGameCard(game)}
 				{/each}
 			</div>
 		</div>

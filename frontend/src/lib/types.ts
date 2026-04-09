@@ -104,10 +104,37 @@ export interface PlayoffRound {
 }
 
 export interface Game {
+	api_id: number;
 	home_team: string;
+	home_team_logo: string | null;
 	visiting_team: string;
+	visiting_team_logo: string | null;
 	home_score: number | null;
 	away_score: number | null;
 	date: string;
 	status: string;
+	start_time: string | null;
+}
+
+export interface LiveGoal {
+	period: string;
+	time: string;
+	scorer: string;
+	assists: string[];
+	is_home: boolean;
+	power_play: boolean;
+	empty_net: boolean;
+}
+
+export interface LiveGame {
+	game_id: string;
+	status: string;
+	period: string;
+	clock: string;
+	home_score: number;
+	visitor_score: number;
+	power_play: { home: boolean; visitor: boolean };
+	goals: LiveGoal[];
+	home_shots: number;
+	visitor_shots: number;
 }
