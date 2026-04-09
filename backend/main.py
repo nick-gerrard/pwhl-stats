@@ -3,14 +3,30 @@ from contextlib import asynccontextmanager
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
+from apscheduler.triggers.date import DateTrigger
 from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from psycopg_pool import AsyncConnectionPool
 
 import database
 from ingestions.run import run_all
-from routers import games, players, playoffs, seasons, standings, stats, teams
+from live.poller import check_start_time, polling_loop
+from routers import games, live, players, playoffs, seasons, standings, stats, teams
 from settings import settings
+
+
+async def schedule_polling(scheduler: AsyncIOScheduler) -> None:
+    assert database.pool is not None
+    async with database.pool.connection() as conn:
+        result = await check_start_time(conn)
+
+    if result and result["start_time"]:
+        scheduler.add_job(polling_loop, DateTrigger(run_date=result["start_time"]))
+
+
+async def run_all_and_reschedule(scheduler: AsyncIOScheduler) -> None:
+    await run_all()
+    await schedule_polling(scheduler)
 
 
 @asynccontextmanager
@@ -19,12 +35,18 @@ async def lifespan(app: FastAPI):
     await database.pool.open()
 
     scheduler = AsyncIOScheduler()
-    scheduler.add_job(run_all, CronTrigger(hour=4, minute=0))
+    scheduler.add_job(
+        run_all_and_reschedule,
+        CronTrigger(hour=4, minute=0),
+        args=[scheduler],
+    )
     scheduler.start()
+
+    await schedule_polling(scheduler)
+
     yield
     scheduler.shutdown()
     await database.pool.close()
-    # Shutdown Code
 
 
 app = FastAPI(lifespan=lifespan)
@@ -42,6 +64,7 @@ app.include_router(standings.router)
 app.include_router(games.router)
 app.include_router(playoffs.router)
 app.include_router(seasons.router)
+app.include_router(live.router)
 
 
 @app.get("/")

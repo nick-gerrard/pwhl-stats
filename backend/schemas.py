@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from pydantic import BaseModel
 
@@ -107,12 +107,16 @@ class Standing(BaseModel):
 
 
 class Game(BaseModel):
+    api_id: int
     home_team: str
+    home_team_logo: str | None
     visiting_team: str
+    visiting_team_logo: str | None
     home_score: int | None
     away_score: int | None
     date: date
     status: str
+    start_time: datetime | None
 
 
 class PlayoffTeam(BaseModel):
