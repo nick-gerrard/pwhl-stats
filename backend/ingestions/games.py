@@ -44,22 +44,22 @@ async def run():
                     home_score = int(game["home_goal_count"]) if status == "final" else None
                     away_score = int(game["visiting_goal_count"]) if status == "final" else None
 
-                    date_played = datetime.fromisoformat(
-                        game["GameDateISO8601"]
-                    ).astimezone(timezone.utc).date()
+                    start_time = datetime.fromisoformat(game["GameDateISO8601"])
+                    date_played = start_time.astimezone(timezone.utc).date()
 
                     await conn.execute(
                         """
                         INSERT INTO games (
                             api_id, season_id, home_team_id, visiting_team_id,
-                            home_score, away_score, date, status, venue
+                            home_score, away_score, date, status, venue, start_time
                         )
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (api_id) DO UPDATE SET
                             home_score = EXCLUDED.home_score,
                             away_score = EXCLUDED.away_score,
                             status = EXCLUDED.status,
-                            venue = EXCLUDED.venue
+                            venue = EXCLUDED.venue,
+                            start_time = EXCLUDED.start_time
                         """,
                         (
                             game["game_id"],
@@ -71,6 +71,7 @@ async def run():
                             date_played,
                             status,
                             game.get("venue_name"),
+                            start_time,
                         ),
                     )
                     total += 1
