@@ -10,6 +10,10 @@ BASE_URL = "https://lscluster.hockeytech.com/feed/index.php"
 AUTH = "key=446521baf8c38984&client_code=pwhl"
 
 
+def _int(value: str) -> int:
+    return int(value) if value else 0
+
+
 async def run():
     async with get_connection() as conn:
         seasons = await get_all_seasons(conn)
@@ -40,9 +44,9 @@ async def run():
                         INSERT INTO standings (
                             team_id, season_id, wins, losses,
                             ot_wins, ot_losses, shootout_wins, shootout_losses,
-                            games_played, points
+                            games_played, points, regulation_wins
                         )
-                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                        VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                         ON CONFLICT (team_id, season_id) DO UPDATE SET
                             wins = EXCLUDED.wins,
                             losses = EXCLUDED.losses,
@@ -51,19 +55,21 @@ async def run():
                             shootout_wins = EXCLUDED.shootout_wins,
                             shootout_losses = EXCLUDED.shootout_losses,
                             games_played = EXCLUDED.games_played,
-                            points = EXCLUDED.points
+                            points = EXCLUDED.points,
+                            regulation_wins = EXCLUDED.regulation_wins
                         """,
                         (
                             team_id,
                             season_id,
-                            int(entry["wins"]),
-                            int(entry["reg_losses"]),
-                            int(entry["ot_wins"]),
-                            int(entry["ot_losses"]),
-                            int(entry["shootout_wins"]),
-                            int(entry["shootout_losses"]),
-                            int(entry["games_played"]),
-                            int(entry["points"]),
+                            _int(entry["wins"]),
+                            _int(entry["reg_losses"]),
+                            _int(entry["ot_wins"]),
+                            _int(entry["ot_losses"]),
+                            _int(entry["shootout_wins"]),
+                            _int(entry["shootout_losses"]),
+                            _int(entry["games_played"]),
+                            _int(entry["points"]),
+                            _int(entry["regulation_wins"]),
                         ),
                     )
 
