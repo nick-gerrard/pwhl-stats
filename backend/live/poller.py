@@ -3,6 +3,7 @@ import asyncio
 from psycopg import AsyncConnection
 from psycopg.rows import dict_row
 
+from ingestions.run import run_all
 from live.firebase import fetch_live_games
 
 live_state: dict = {}
@@ -41,4 +42,8 @@ async def polling_loop():
 
         all_games_completed = _check_game_status(live_state)
 
-        await asyncio.sleep(10)
+        if not all_games_completed:
+            await asyncio.sleep(10)
+
+    await asyncio.sleep(20 * 60)
+    await run_all()
