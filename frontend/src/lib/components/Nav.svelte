@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import Logo from '$lib/components/Logo.svelte';
 
 	const links = [
 		{ href: '/', label: 'Standings' },
@@ -16,7 +17,8 @@
 <nav class="border-b border-zinc-800 bg-zinc-900">
 	<div class="mx-auto max-w-6xl px-4">
 		<div class="flex h-14 items-center justify-between">
-			<a href="/" class="text-lg font-bold tracking-tight text-pwhl-light">
+			<a href="/" class="flex items-center gap-2 text-lg font-bold tracking-tight text-pwhl-light">
+				<Logo size={28} />
 				PWHL Stats
 			</a>
 

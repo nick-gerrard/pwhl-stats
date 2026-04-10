@@ -1,9 +1,16 @@
+<script lang="ts">
+	import Logo from '$lib/components/Logo.svelte';
+</script>
+
 <svelte:head>
 	<title>About — PWHL Stats</title>
 </svelte:head>
 
-<div class="max-w-2xl">
-	<h1 class="mb-6 text-2xl font-bold">About</h1>
+<div class="mx-auto max-w-2xl">
+	<div class="mb-6 flex items-center gap-4">
+		<Logo size={64} />
+		<h1 class="text-2xl font-bold">About</h1>
+	</div>
 
 	<div class="space-y-4 text-zinc-300">
 		<p>
