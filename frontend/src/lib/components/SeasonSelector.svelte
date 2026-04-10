@@ -3,7 +3,7 @@
 	import { page } from '$app/state';
 	import type { Season } from '$lib/types';
 
-	let { seasons }: { seasons: Season[] } = $props();
+	let { seasons, class: className = '' }: { seasons: Season[]; class?: string } = $props();
 
 	const current = $derived(page.url.searchParams.get('season_id') ?? '');
 
@@ -17,7 +17,7 @@
 	value={current}
 	onchange={onChange}
 	class="rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
-		focus:border-pwhl-light focus:outline-none"
+		focus:border-pwhl-light focus:outline-none {className}"
 >
 	<option value="">Current Season</option>
 	{#each seasons as season}

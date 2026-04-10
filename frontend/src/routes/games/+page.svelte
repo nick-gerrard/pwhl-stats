@@ -45,7 +45,8 @@
 	const pastByDate = $derived(groupByDate(pastGames));
 
 	function formatDate(dateStr: string) {
-		return new Date(dateStr).toLocaleDateString('en-CA', {
+		const [year, month, day] = dateStr.split('-').map(Number);
+		return new Date(year, month - 1, day).toLocaleDateString('en-CA', {
 			weekday: 'long',
 			month: 'long',
 			day: 'numeric'
@@ -82,14 +83,14 @@
 	<title>Games — PWHL Stats</title>
 </svelte:head>
 
-<div class="mb-6 flex items-center justify-between">
+<div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 	<h1 class="text-2xl font-bold">Schedule & Scores</h1>
-	<div class="flex gap-2">
-		<SeasonSelector seasons={data.regularSeasons} />
+	<div class="flex w-full gap-2 sm:w-auto">
+		<SeasonSelector seasons={data.regularSeasons} class="flex-1 sm:flex-none" />
 		<select
 			bind:value={teamFilter}
-			class="rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
-				focus:border-pwhl-light focus:outline-none"
+			class="flex-1 rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
+				focus:border-pwhl-light focus:outline-none sm:flex-none"
 		>
 			<option value="">All Teams</option>
 			{#each teams as team}
@@ -111,9 +112,54 @@
 {#snippet liveGameCard(game: (typeof data.games)[0])}
 	{@const live = liveScores[String(game.api_id)]}
 	{@const score = formatScore(game.home_score, game.away_score)}
-	<div class="rounded-lg border px-4 py-3
+	<div class="rounded-lg border px-4 py-4
 		{live?.status === 'In Progress' ? 'border-pwhl bg-pwhl-dark/20' : 'border-zinc-800 bg-zinc-900'}">
-		<div class="flex items-center gap-4">
+		<!-- Mobile layout -->
+		<div class="flex items-center gap-3 sm:hidden">
+			<div class="flex flex-1 flex-col gap-2">
+				<div class="flex items-center gap-2">
+					{#if game.home_team_logo}
+						<img src={game.home_team_logo} alt={game.home_team} class="h-6 w-6 shrink-0 object-contain" />
+					{/if}
+					<span class="font-medium text-white">{game.home_team}</span>
+					{#if live?.power_play.home}
+						<span class="rounded bg-pwhl-light/20 px-1.5 py-0.5 text-xs font-semibold text-pwhl-light">PP</span>
+					{/if}
+				</div>
+				<div class="flex items-center gap-2">
+					{#if game.visiting_team_logo}
+						<img src={game.visiting_team_logo} alt={game.visiting_team} class="h-6 w-6 shrink-0 object-contain" />
+					{/if}
+					<span class="font-medium text-white">{game.visiting_team}</span>
+					{#if live?.power_play.visitor}
+						<span class="rounded bg-pwhl-light/20 px-1.5 py-0.5 text-xs font-semibold text-pwhl-light">PP</span>
+					{/if}
+				</div>
+			</div>
+			<div class="flex shrink-0 flex-col items-end gap-0.5">
+				{#if live}
+					<span class="text-lg font-bold text-white">{live.home_score} – {live.visitor_score}</span>
+					{#if live.status === 'In Progress'}
+						<div class="flex items-center gap-1">
+							<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500"></span>
+							<span class="text-xs text-zinc-300">{live.period} · {live.clock}</span>
+						</div>
+						<span class="text-xs text-zinc-500">{live.home_shots}–{live.visitor_shots} SOG</span>
+					{:else}
+						<span class="rounded bg-zinc-700 px-2 py-0.5 text-xs text-zinc-300">Final</span>
+					{/if}
+				{:else if score}
+					<span class="text-lg font-bold text-white">{score}</span>
+					<span class="text-xs text-zinc-400">{game.status}</span>
+				{:else}
+					<span class="text-sm text-zinc-400">vs</span>
+					{@const time = formatTime(game.start_time)}
+					{#if time}<span class="text-xs text-zinc-300">{time}</span>{/if}
+				{/if}
+			</div>
+		</div>
+		<!-- Desktop layout -->
+		<div class="hidden sm:flex sm:items-center sm:gap-4">
 			<div class="flex flex-1 items-center justify-end gap-2">
 				{#if live?.power_play.home}
 					<span class="rounded bg-pwhl-light/20 px-1.5 py-0.5 text-xs font-semibold text-pwhl-light">PP</span>
@@ -148,7 +194,7 @@
 			</div>
 		</div>
 		{#if live?.status === 'In Progress'}
-			<div class="mt-2 text-center text-xs text-zinc-500">
+			<div class="mt-2 hidden text-center text-xs text-zinc-500 sm:block">
 				{live.home_shots} – {live.visitor_shots} SOG
 			</div>
 		{/if}
@@ -157,9 +203,37 @@
 
 {#snippet gameCard(game: (typeof data.games)[0], highlight: boolean)}
 	{@const score = formatScore(game.home_score, game.away_score)}
-	<div class="rounded-lg border px-4 py-3
+	<div class="rounded-lg border px-4 py-4
 		{highlight ? 'border-pwhl bg-pwhl-dark/20' : 'border-zinc-800 bg-zinc-900'}">
-		<div class="flex items-center gap-4">
+		<!-- Mobile layout -->
+		<div class="flex items-center gap-3 sm:hidden">
+			<div class="flex flex-1 flex-col gap-2">
+				<div class="flex items-center gap-2">
+					{#if game.home_team_logo}
+						<img src={game.home_team_logo} alt={game.home_team} class="h-6 w-6 shrink-0 object-contain" />
+					{/if}
+					<span class="font-medium text-white">{game.home_team}</span>
+				</div>
+				<div class="flex items-center gap-2">
+					{#if game.visiting_team_logo}
+						<img src={game.visiting_team_logo} alt={game.visiting_team} class="h-6 w-6 shrink-0 object-contain" />
+					{/if}
+					<span class="font-medium text-white">{game.visiting_team}</span>
+				</div>
+			</div>
+			<div class="flex shrink-0 flex-col items-end gap-0.5">
+				{#if score}
+					<span class="text-lg font-bold text-white">{score}</span>
+					<span class="text-xs text-zinc-400">{game.status}</span>
+				{:else}
+					<span class="text-sm text-zinc-400">vs</span>
+					{@const time = formatTime(game.start_time)}
+					{#if time}<span class="text-xs text-zinc-300">{time}</span>{/if}
+				{/if}
+			</div>
+		</div>
+		<!-- Desktop layout -->
+		<div class="hidden sm:flex sm:items-center sm:gap-4">
 			<div class="flex flex-1 justify-end">
 				{@render teamName(game.home_team, game.home_team_logo, 'right')}
 			</div>

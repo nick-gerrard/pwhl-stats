@@ -2,6 +2,7 @@ export interface Standing {
 	team_name: string;
 	games_played: number;
 	wins: number;
+	regulation_wins: number;
 	losses: number;
 	ot_wins: number;
 	ot_losses: number;

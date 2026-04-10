@@ -105,15 +105,15 @@
 
 <svelte:window onkeydown={handleKeydown} />
 
-<div class="mb-6 flex items-center justify-between">
+<div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 	<h1 class="text-2xl font-bold">Skater Stats</h1>
-	<div class="flex gap-2">
-		<SeasonSelector seasons={data.regularSeasons} />
+	<div class="flex w-full gap-2 sm:w-auto">
+		<SeasonSelector seasons={data.regularSeasons} class="flex-1 sm:flex-none" />
 		<select
 			bind:value={teamFilter}
 			onchange={() => (currentPage = 1)}
-			class="rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
-				focus:border-pwhl-light focus:outline-none"
+			class="flex-1 rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
+				focus:border-pwhl-light focus:outline-none sm:flex-none"
 		>
 			<option value="">All Teams</option>
 			{#each teams as team}
@@ -132,7 +132,7 @@
 						Player{sortIndicator('last_name')}
 					</button>
 				</th>
-				<th class="px-4 py-3 font-medium">Team</th>
+				<th class="hidden px-4 py-3 font-medium sm:table-cell">Team</th>
 				<th class="px-4 py-3 text-center font-medium">
 					<button onclick={() => setSort('goals')} class="hover:text-white">
 						G{sortIndicator('goals')}
@@ -161,12 +161,12 @@
 					onclick={() => openPlayer(skater.player_id)}
 					class="cursor-pointer border-b border-zinc-800 last:border-0 transition-colors
 						{i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}
-						hover:bg-zinc-800"
+						hover:bg-zinc-800 [&>td]:py-4 sm:[&>td]:py-3"
 				>
 					<td class="px-4 py-3 font-medium text-white"
 						>{skater.first_name} {skater.last_name}</td
 					>
-					<td class="px-4 py-3 text-zinc-400">{skater.team_name}</td>
+					<td class="hidden px-4 py-3 text-zinc-400 sm:table-cell">{skater.team_name}</td>
 					<td class="px-4 py-3 text-center text-zinc-300">{skater.goals}</td>
 					<td class="px-4 py-3 text-center text-zinc-300">{skater.assists}</td>
 					<td class="px-4 py-3 text-center font-bold text-white"

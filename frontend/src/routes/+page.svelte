@@ -9,9 +9,9 @@
 	<title>Standings — PWHL Stats</title>
 </svelte:head>
 
-<div class="mb-6 flex items-center justify-between">
+<div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 	<h1 class="text-2xl font-bold">Standings</h1>
-	<SeasonSelector seasons={data.regularSeasons} />
+	<SeasonSelector seasons={data.regularSeasons} class="w-full sm:w-auto" />
 </div>
 
 <!-- Desktop table -->
@@ -55,15 +55,22 @@
 <!-- Mobile card list -->
 <div class="rounded-lg border border-zinc-800 md:hidden">
 	{#each data.standings as row, i}
-		<div class="flex items-center justify-between border-b border-zinc-800 px-4 py-3 last:border-0
+		<div class="border-b border-zinc-800 px-4 py-4 last:border-0
 			{i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}">
-			<div>
-				<div class="font-medium text-white">{row.team_name}</div>
-				<div class="mt-1 text-xs text-zinc-400">
-					GP {row.games_played} · W {row.wins} · RW {row.regulation_wins} · L {row.losses} · OTW {row.ot_wins} · OTL {row.ot_losses} · SOW {row.shootout_wins} · SOL {row.shootout_losses}
-				</div>
+			<div class="mb-3 flex items-center justify-between">
+				<span class="font-medium text-white">{row.team_name}</span>
+				<span class="text-xl font-bold text-white">{row.points} <span class="text-sm font-normal text-zinc-400">PTS</span></span>
 			</div>
-			<div class="ml-4 text-xl font-bold text-white">{row.points} <span class="text-sm font-normal text-zinc-400">PTS</span></div>
+			<div class="grid grid-cols-4 gap-y-2 text-center text-xs">
+				<div><p class="text-zinc-500">GP</p><p class="font-medium text-zinc-200">{row.games_played}</p></div>
+				<div><p class="text-zinc-500">W</p><p class="font-medium text-zinc-200">{row.wins}</p></div>
+				<div><p class="text-zinc-500">RW</p><p class="font-medium text-zinc-200">{row.regulation_wins}</p></div>
+				<div><p class="text-zinc-500">L</p><p class="font-medium text-zinc-200">{row.losses}</p></div>
+				<div><p class="text-zinc-500">OTW</p><p class="font-medium text-zinc-200">{row.ot_wins}</p></div>
+				<div><p class="text-zinc-500">OTL</p><p class="font-medium text-zinc-200">{row.ot_losses}</p></div>
+				<div><p class="text-zinc-500">SOW</p><p class="font-medium text-zinc-200">{row.shootout_wins}</p></div>
+				<div><p class="text-zinc-500">SOL</p><p class="font-medium text-zinc-200">{row.shootout_losses}</p></div>
+			</div>
 		</div>
 	{/each}
 </div>
