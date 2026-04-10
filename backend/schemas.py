@@ -61,6 +61,13 @@ class PlayerInfo(BaseModel):
     active: bool
 
 
+class SkaterCareerInfo(PlayerInfo):
+    api_id: int
+    season_id: int
+    start_date: date
+    end_date: date
+
+
 class GoalieStats(BaseModel):
     player_id: int
     first_name: str
@@ -69,6 +76,7 @@ class GoalieStats(BaseModel):
     wins: int
     shutouts: int
     save_percentage: float
+
 
 class GoalieInfo(BaseModel):
     first_name: str
@@ -92,6 +100,12 @@ class GoalieInfo(BaseModel):
     position: str | None
     active: bool
 
+
+class GoalieCareerInfo(GoalieInfo):
+    api_id: int
+    season_id: int
+    start_date: date
+    end_date: date
 
 
 class Standing(BaseModel):
@@ -139,3 +153,22 @@ class PlayoffRound(BaseModel):
     round_number: int
     round_name: str
     series: list[PlayoffSeries]
+
+
+class Leaderboard(BaseModel):
+    first_name: str
+    last_name: str
+    team_name: str
+
+
+class GoalieLeaderboard(Leaderboard):
+    wins: int
+    save_percentage: float
+    shutouts: int
+    gaa: float | None | None
+
+
+class SkaterLeaderboard(Leaderboard):
+    goals: int
+    assists: int
+    points: int
