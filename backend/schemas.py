@@ -62,6 +62,7 @@ class PlayerInfo(BaseModel):
 
 
 class SkaterCareerInfo(PlayerInfo):
+    api_id: int
     season_id: int
     start_date: date
     end_date: date
@@ -101,6 +102,7 @@ class GoalieInfo(BaseModel):
 
 
 class GoalieCareerInfo(GoalieInfo):
+    api_id: int
     season_id: int
     start_date: date
     end_date: date
@@ -163,7 +165,7 @@ class GoalieLeaderboard(Leaderboard):
     wins: int
     save_percentage: float
     shutouts: int
-    gaa: float | None
+    gaa: float | None | None
 
 
 class SkaterLeaderboard(Leaderboard):

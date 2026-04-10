@@ -77,12 +77,13 @@ async def get_player_career(conn: AsyncConnection, player_id: int) -> list[dict]
                 ss.games_played, ss.goals, ss.assists, ss.pim, ss.plus_minus,
                 ss.shots, ss.avg_toi, ss.pp_goals, ss.sh_goals, ss.gw_goals,
                 p.height, p.weight, p.birthdate, p.nationality, p.shoots, p.position,
-                p.active, ss.season_id, s.start_date, s.end_date
+                p.active, ss.season_id, s.start_date, s.end_date, p.api_id
                 FROM skater_stats ss
                 JOIN players p ON p.id = ss.player_id
                 JOIN teams t ON t.id = ss.team_id
                 JOIN seasons s on s.id = ss.season_id
                 WHERE s.season_type = 'regular' AND ss.player_id = %s
+                ORDER BY s.start_date ASC
             """,
             (player_id,),
         )
@@ -97,12 +98,13 @@ async def get_goalie_career(conn: AsyncConnection, player_id: int) -> list[dict]
                 gs.games_played, gs.wins, gs.losses, gs.ot_losses, gs.shutouts,
                 gs.shots_against, gs.goals_against, gs.save_percentage, gs.gaa,
                 gs.minutes_played, p.height, p.weight, p.birthdate, p.nationality, p.shoots,
-                p.position, p.active, gs.season_id, s.start_date, s.end_date
+                p.position, p.active, gs.season_id, s.start_date, s.end_date, p.api_id
                 FROM goalie_stats gs
                 JOIN players p on p.id = gs.player_id
                 JOIN teams t on t.id = gs.team_id
                 JOIN seasons s on s.id = gs.season_id
                 WHERE s.season_type = 'regular' AND gs.player_id = %s
+                ORDER BY s.start_date ASC
             """,
             (player_id,),
         )

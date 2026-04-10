@@ -117,6 +117,79 @@ export interface Game {
 	start_time: string | null;
 }
 
+export interface SkaterCareerInfo {
+	api_id: number;
+	season_id: number;
+	start_date: string;
+	end_date: string;
+	first_name: string;
+	last_name: string;
+	team_name: string;
+	games_played: number;
+	goals: number;
+	assists: number;
+	pim: number;
+	plus_minus: number;
+	shots: number;
+	avg_toi: string | null;
+	pp_goals: number;
+	sh_goals: number;
+	gw_goals: number;
+	height: number | null;
+	weight: number | null;
+	birthdate: string | null;
+	nationality: string | null;
+	shoots: string | null;
+	position: string | null;
+	active: boolean;
+}
+
+export interface GoalieCareerInfo {
+	api_id: number;
+	season_id: number;
+	start_date: string;
+	end_date: string;
+	first_name: string;
+	last_name: string;
+	team_name: string;
+	games_played: number;
+	wins: number;
+	losses: number;
+	ot_losses: number;
+	shutouts: number;
+	shots_against: number;
+	goals_against: number;
+	save_percentage: number | null;
+	gaa: number | null;
+	minutes_played: number;
+	height: number | null;
+	weight: number | null;
+	birthdate: string | null;
+	nationality: string | null;
+	shoots: string | null;
+	position: string | null;
+	active: boolean;
+}
+
+export interface SkaterLeaderboard {
+	first_name: string;
+	last_name: string;
+	team_name: string;
+	goals: number;
+	assists: number;
+	points: number;
+}
+
+export interface GoalieLeaderboard {
+	first_name: string;
+	last_name: string;
+	team_name: string;
+	wins: number;
+	save_percentage: number;
+	shutouts: number;
+	gaa: number | null;
+}
+
 export interface LiveGoal {
 	period: string;
 	time: string;

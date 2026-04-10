@@ -8,6 +8,7 @@
 		{ href: '/playoffs', label: 'Playoffs' },
 		{ href: '/stats/skaters', label: 'Skaters' },
 		{ href: '/stats/goalies', label: 'Goalies' },
+		{ href: '/stats/leaders', label: 'Leaders' },
 		{ href: '/about', label: 'About' }
 	];
 

@@ -19,6 +19,7 @@
 	let currentPage = $state(1);
 
 	let selectedGoalie = $state<GoalieInfo | null>(null);
+	let selectedGoalieId = $state<number | null>(null);
 	let modalOpen = $state(false);
 	let loading = $state(false);
 
@@ -83,6 +84,7 @@
 		modalOpen = true;
 		loading = true;
 		selectedGoalie = null;
+		selectedGoalieId = player_id;
 		const seasonId = page.url.searchParams.get('season_id');
 		const query = seasonId ? `?season_id=${seasonId}` : '';
 		const res = await fetch(`${PUBLIC_API_URL}/stats/goalies/${player_id}${query}`);
@@ -93,6 +95,7 @@
 	function closeModal() {
 		modalOpen = false;
 		selectedGoalie = null;
+		selectedGoalieId = null;
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
@@ -109,11 +112,11 @@
 <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 	<h1 class="text-2xl font-bold">Goalie Stats</h1>
 	<div class="flex w-full gap-2 sm:w-auto">
-		<SeasonSelector seasons={data.regularSeasons} class="flex-1 sm:flex-none" />
+		<SeasonSelector seasons={data.regularSeasons} class="min-w-0 flex-1 sm:flex-none" />
 		<select
 			bind:value={teamFilter}
 			onchange={() => (currentPage = 1)}
-			class="flex-1 rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
+			class="min-w-0 flex-1 rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
 				focus:border-pwhl-light focus:outline-none sm:flex-none"
 		>
 			<option value="">All Teams</option>
@@ -292,6 +295,14 @@
 						</div>
 					</div>
 				</div>
+			</div>
+			<div class="mt-5 text-right">
+				<a
+					href="/stats/goalies/{selectedGoalieId}"
+					class="text-sm text-pwhl-light hover:underline"
+				>
+					View full profile →
+				</a>
 			</div>
 		{/if}
 	</div>
