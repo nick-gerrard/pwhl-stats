@@ -98,6 +98,7 @@ class Standing(BaseModel):
     team_name: str
     games_played: int
     wins: int
+    regulation_wins: int
     losses: int
     ot_wins: int
     ot_losses: int
