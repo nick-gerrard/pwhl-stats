@@ -22,7 +22,7 @@ async def schedule_polling(scheduler: AsyncIOScheduler) -> None:
         result = await check_start_time(conn)
         expected_ids = await get_today_game_ids(conn)
 
-    if result and result["start_time"] and expected_ids:
+    if settings.enable_polling and result and result["start_time"] and expected_ids:
         if result["start_time"] <= datetime.now(timezone.utc):
             asyncio.create_task(polling_loop(expected_ids))
         else:

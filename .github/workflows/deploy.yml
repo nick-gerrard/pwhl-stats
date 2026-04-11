@@ -58,6 +58,7 @@ jobs:
         env:
           DATABASE_URL: postgresql://pwhl:testpassword@localhost:5432/pwhlstats
           ADMIN_TOKEN: test-token
+          ENABLE_POLLING: false
         run: uv run pytest -v
 
   deploy:
