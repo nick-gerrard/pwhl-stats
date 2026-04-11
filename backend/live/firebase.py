@@ -16,7 +16,7 @@ def _is_active_penalty(penalty: dict) -> bool:
     return (
         penalty["PenaltyShot"] == 0
         and penalty["PowerPlay"] == 1
-        and penalty["TimeOnSet"] == 0
+        and penalty["TimeStartSet"] == 1
     )
 
 
@@ -58,11 +58,13 @@ def _parse_goals(game_goals: dict) -> tuple[int, int, list]:
 
 def _parse_power_play(game_penalties: dict) -> dict:
     active = [p for p in game_penalties.values() if _is_active_penalty(p)]
+    home_penalties = sum(1 for p in active if p["Home"] == 1)
+    visitor_penalties = sum(1 for p in active if p["Home"] == 0)
     return {
-        # visitor took the penalty → home team is on the power play
-        "home": any(p["Home"] == 0 for p in active),
-        # home took the penalty → visitor team is on the power play
-        "visitor": any(p["Home"] == 1 for p in active),
+        # home is on PP when visitor has more players in the box
+        "home": visitor_penalties > home_penalties,
+        # visitor is on PP when home has more players in the box
+        "visitor": home_penalties > visitor_penalties,
     }
 
 

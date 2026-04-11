@@ -5,6 +5,7 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 
 from live import poller
+from live.poller import live_state
 
 router = APIRouter()
 
@@ -15,6 +16,8 @@ async def live():
         queue = asyncio.Queue()
         poller.clients.add(queue)
         try:
+            if live_state:
+                yield f"data: {json.dumps(live_state)}\n\n"
             while True:
                 data = await queue.get()
                 yield f"data: {json.dumps(data)}\n\n"
