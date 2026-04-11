@@ -86,10 +86,10 @@
 <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 	<h1 class="text-2xl font-bold">Schedule & Scores</h1>
 	<div class="flex w-full gap-2 sm:w-auto">
-		<SeasonSelector seasons={data.regularSeasons} class="flex-1 sm:flex-none" />
+		<SeasonSelector seasons={data.regularSeasons} class="min-w-0 flex-1 sm:flex-none" />
 		<select
 			bind:value={teamFilter}
-			class="flex-1 rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
+			class="min-w-0 flex-1 rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
 				focus:border-pwhl-light focus:outline-none sm:flex-none"
 		>
 			<option value="">All Teams</option>
@@ -113,7 +113,7 @@
 	{@const live = liveScores[String(game.api_id)]}
 	{@const score = formatScore(game.home_score, game.away_score)}
 	<div class="rounded-lg border px-4 py-4
-		{live?.status === 'In Progress' ? 'border-pwhl bg-pwhl-dark/20' : 'border-zinc-800 bg-zinc-900'}">
+		{live?.status .startsWith('In Progress') ? 'border-pwhl bg-pwhl-dark/20' : 'border-zinc-800 bg-zinc-900'}">
 		<!-- Mobile layout -->
 		<div class="flex items-center gap-3 sm:hidden">
 			<div class="flex flex-1 flex-col gap-2">
@@ -139,7 +139,7 @@
 			<div class="flex shrink-0 flex-col items-end gap-0.5">
 				{#if live}
 					<span class="text-lg font-bold text-white">{live.home_score} – {live.visitor_score}</span>
-					{#if live.status === 'In Progress'}
+					{#if live.status .startsWith('In Progress')}
 						<div class="flex items-center gap-1">
 							<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500"></span>
 							<span class="text-xs text-zinc-300">{live.period} · {live.clock}</span>
@@ -169,7 +169,7 @@
 			<div class="flex w-36 shrink-0 flex-col items-center">
 				{#if live}
 					<span class="text-lg font-bold text-white">{live.home_score} – {live.visitor_score}</span>
-					{#if live.status === 'In Progress'}
+					{#if live.status .startsWith('In Progress')}
 						<div class="mt-0.5 flex items-center gap-1.5">
 							<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500"></span>
 							<span class="text-xs text-zinc-300">{live.period} · {live.clock}</span>
@@ -193,7 +193,7 @@
 				{/if}
 			</div>
 		</div>
-		{#if live?.status === 'In Progress'}
+		{#if live?.status .startsWith('In Progress')}
 			<div class="mt-2 hidden text-center text-xs text-zinc-500 sm:block">
 				{live.home_shots} – {live.visitor_shots} SOG
 			</div>

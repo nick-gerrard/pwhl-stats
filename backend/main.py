@@ -1,5 +1,6 @@
 import asyncio
 from contextlib import asynccontextmanager
+from datetime import datetime, timezone
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -10,7 +11,7 @@ from psycopg_pool import AsyncConnectionPool
 
 import database
 from ingestions.run import run_all
-from live.poller import check_start_time, polling_loop
+from live.poller import check_start_time, get_today_game_ids, polling_loop
 from routers import games, live, players, playoffs, seasons, standings, stats, teams
 from settings import settings
 
@@ -19,9 +20,17 @@ async def schedule_polling(scheduler: AsyncIOScheduler) -> None:
     assert database.pool is not None
     async with database.pool.connection() as conn:
         result = await check_start_time(conn)
+        expected_ids = await get_today_game_ids(conn)
 
-    if result and result["start_time"]:
-        scheduler.add_job(polling_loop, DateTrigger(run_date=result["start_time"]))
+    if result and result["start_time"] and expected_ids:
+        if result["start_time"] <= datetime.now(timezone.utc):
+            asyncio.create_task(polling_loop(expected_ids))
+        else:
+            scheduler.add_job(
+                polling_loop,
+                DateTrigger(run_date=result["start_time"]),
+                args=[expected_ids],
+            )
 
 
 async def run_all_and_reschedule(scheduler: AsyncIOScheduler) -> None:

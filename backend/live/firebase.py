@@ -32,11 +32,11 @@ def _parse_goals(game_goals: dict) -> tuple[int, int, list]:
             visitor_score += 1
 
         assists = []
-        if goal["Assist1PlayerLastName"]:
+        if goal.get("Assist1PlayerLastName"):
             assists.append(
                 f"{goal['Assist1PlayerFirstName']} {goal['Assist1PlayerLastName']}"
             )
-        if goal["Assist2PlayerLastName"]:
+        if goal.get("Assist2PlayerLastName"):
             assists.append(
                 f"{goal['Assist2PlayerFirstName']} {goal['Assist2PlayerLastName']}"
             )
