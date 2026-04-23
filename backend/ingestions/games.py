@@ -45,7 +45,7 @@ async def run():
                     away_score = int(game["visiting_goal_count"]) if status == "final" else None
 
                     start_time = datetime.fromisoformat(game["GameDateISO8601"])
-                    date_played = start_time.astimezone(timezone.utc).date()
+                    date_played = start_time.date()
 
                     await conn.execute(
                         """
@@ -57,6 +57,7 @@ async def run():
                         ON CONFLICT (api_id) DO UPDATE SET
                             home_score = EXCLUDED.home_score,
                             away_score = EXCLUDED.away_score,
+                            date = EXCLUDED.date,
                             status = EXCLUDED.status,
                             venue = EXCLUDED.venue,
                             start_time = EXCLUDED.start_time
