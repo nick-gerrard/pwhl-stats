@@ -42,6 +42,11 @@
 								<img src={row.logo_url} alt={row.team_name} class="h-6 w-6 object-contain" />
 							{/if}
 							{row.team_name}
+							{#if row.clinched}
+								<span class="rounded bg-green-900/50 px-1.5 py-0.5 text-xs font-semibold text-green-400">C</span>
+							{:else if row.eliminated}
+								<span class="rounded bg-zinc-800 px-1.5 py-0.5 text-xs font-semibold text-zinc-500">E</span>
+							{/if}
 						</div>
 					</td>
 					<td class="px-4 py-3 text-center text-zinc-300">{row.games_played}</td>
@@ -70,6 +75,11 @@
 						<img src={row.logo_url} alt={row.team_name} class="h-6 w-6 object-contain" />
 					{/if}
 					<span class="font-medium text-white">{row.team_name}</span>
+					{#if row.clinched}
+						<span class="rounded bg-green-900/50 px-1.5 py-0.5 text-xs font-semibold text-green-400">C</span>
+					{:else if row.eliminated}
+						<span class="rounded bg-zinc-800 px-1.5 py-0.5 text-xs font-semibold text-zinc-500">E</span>
+					{/if}
 				</div>
 				<span class="text-xl font-bold text-white">{row.points} <span class="text-sm font-normal text-zinc-400">PTS</span></span>
 			</div>

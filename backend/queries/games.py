@@ -17,3 +17,18 @@ async def get_games(conn: AsyncConnection, season_id: int) -> list[dict]:
             (season_id,),
         )
         return await cur.fetchall()
+
+async def get_remaining_games(conn: AsyncConnection, season_id: int) -> list:
+    async with conn.cursor(row_factory=dict_row) as cur:
+        await cur.execute(
+            """
+            SELECT t.id, COUNT(*) as remaining_games
+            FROM games g
+            JOIN teams t on t.id = g.home_team_id or t.id = g.visiting_team_id
+            WHERE g.season_id = %s AND g.status != 'final'
+            GROUP BY t.id
+            """,
+            (season_id,),
+        )
+        return await cur.fetchall()
+    

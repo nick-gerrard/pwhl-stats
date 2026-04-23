@@ -10,6 +10,8 @@ export interface Standing {
 	shootout_wins: number;
 	shootout_losses: number;
 	points: number;
+	clinched: boolean;
+	eliminated: boolean;
 }
 
 export interface SkaterStats {

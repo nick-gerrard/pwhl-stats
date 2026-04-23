@@ -13,3 +13,5 @@ async def get_seasons(conn: AsyncConnection) -> list[dict]:
             """
         )
         return await cur.fetchall()
+
+
