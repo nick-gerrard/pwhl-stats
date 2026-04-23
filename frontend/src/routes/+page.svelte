@@ -36,7 +36,14 @@
 				<tr class="border-b border-zinc-800 last:border-0 transition-colors
 					{i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}
 					hover:bg-zinc-800">
-					<td class="px-4 py-3 font-medium text-white">{row.team_name}</td>
+					<td class="px-4 py-3 font-medium text-white">
+						<div class="flex items-center gap-2">
+							{#if row.logo_url}
+								<img src={row.logo_url} alt={row.team_name} class="h-6 w-6 object-contain" />
+							{/if}
+							{row.team_name}
+						</div>
+					</td>
 					<td class="px-4 py-3 text-center text-zinc-300">{row.games_played}</td>
 					<td class="px-4 py-3 text-center text-zinc-300">{row.wins}</td>
 					<td class="px-4 py-3 text-center text-zinc-300">{row.regulation_wins}</td>
@@ -58,7 +65,12 @@
 		<div class="border-b border-zinc-800 px-4 py-4 last:border-0
 			{i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}">
 			<div class="mb-3 flex items-center justify-between">
-				<span class="font-medium text-white">{row.team_name}</span>
+				<div class="flex items-center gap-2">
+					{#if row.logo_url}
+						<img src={row.logo_url} alt={row.team_name} class="h-6 w-6 object-contain" />
+					{/if}
+					<span class="font-medium text-white">{row.team_name}</span>
+				</div>
 				<span class="text-xl font-bold text-white">{row.points} <span class="text-sm font-normal text-zinc-400">PTS</span></span>
 			</div>
 			<div class="grid grid-cols-4 gap-y-2 text-center text-xs">

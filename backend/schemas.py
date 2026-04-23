@@ -96,6 +96,7 @@ class GoalieInfo(BaseModel):
 
 class Standing(BaseModel):
     team_name: str
+    logo_url: str
     games_played: int
     wins: int
     regulation_wins: int

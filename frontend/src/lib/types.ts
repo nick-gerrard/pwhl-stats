@@ -1,5 +1,6 @@
 export interface Standing {
 	team_name: string;
+	logo_url: string | null;
 	games_played: number;
 	wins: number;
 	regulation_wins: number;
