@@ -70,6 +70,14 @@
 
 	let tickedClocks: Record<string, string> = $state({});
 	let runningGames: Record<string, boolean> = $state({});
+	let expandedGames: Set<string> = $state(new Set());
+
+	function toggleExpanded(gameId: string) {
+		const next = new Set(expandedGames);
+		if (next.has(gameId)) next.delete(gameId);
+		else next.add(gameId);
+		expandedGames = next;
+	}
 
 	function parseClockSeconds(clock: string): number {
 		const [min, sec] = clock.split(':').map(Number);
@@ -144,6 +152,9 @@
 {#snippet liveGameCard(game: (typeof data.games)[0])}
 	{@const live = liveScores[String(game.api_id)]}
 	{@const score = formatScore(game.home_score, game.away_score)}
+	{@const gameId = String(game.api_id)}
+	{@const expanded = expandedGames.has(gameId)}
+	{@const hasGoals = (live?.goals?.length ?? 0) > 0}
 	<div class="rounded-lg border px-4 py-4
 		{live?.status === 'In Progress' ? 'border-pwhl bg-pwhl-dark/20' : 'border-zinc-800 bg-zinc-900'}">
 		<!-- Mobile layout -->
@@ -229,6 +240,37 @@
 			<div class="mt-2 hidden text-center text-xs text-zinc-500 sm:block">
 				{live.home_shots} – {live.visitor_shots} SOG
 			</div>
+		{/if}
+		{#if hasGoals}
+			<button
+				onclick={() => toggleExpanded(gameId)}
+				class="mt-3 flex w-full items-center justify-center gap-1 border-t border-zinc-800 pt-3 text-xs text-zinc-500 hover:text-zinc-300">
+				{expanded ? 'Hide goals ▲' : 'Show goals ▾'}
+			</button>
+			{#if expanded}
+				<div class="mt-3 space-y-2">
+					{#each live.goals as goal}
+						<div class="flex items-start justify-between gap-2 text-xs">
+							<div class="flex items-start gap-2">
+								<span class="w-16 shrink-0 text-zinc-500">{goal.period} · {goal.time}</span>
+								<div>
+									<span class="font-medium text-white">{goal.scorer}</span>
+									{#if goal.power_play}
+										<span class="ml-1 rounded bg-pwhl-light/20 px-1 py-0.5 text-xs font-semibold text-pwhl-light">PP</span>
+									{/if}
+									{#if goal.empty_net}
+										<span class="ml-1 rounded bg-zinc-700 px-1 py-0.5 text-xs font-semibold text-zinc-400">EN</span>
+									{/if}
+									{#if goal.assists.length > 0}
+										<p class="text-zinc-500">{goal.assists.join(', ')}</p>
+									{/if}
+								</div>
+							</div>
+							<span class="shrink-0 text-zinc-500">{goal.is_home ? game.home_team : game.visiting_team}</span>
+						</div>
+					{/each}
+				</div>
+			{/if}
 		{/if}
 	</div>
 {/snippet}
