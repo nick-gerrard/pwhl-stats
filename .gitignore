@@ -24,6 +24,9 @@ frontend/dist/
 # Data Samples
 data_samples/
 
+# Raw API response snapshots (local dev only)
+get_data
+
 # IDE
 .vscode/
 .idea/

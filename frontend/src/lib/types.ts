@@ -1,5 +1,6 @@
 export interface Standing {
 	team_name: string;
+	logo_url: string | null;
 	games_played: number;
 	wins: number;
 	regulation_wins: number;
@@ -9,6 +10,8 @@ export interface Standing {
 	shootout_wins: number;
 	shootout_losses: number;
 	points: number;
+	clinched: boolean;
+	eliminated: boolean;
 }
 
 export interface SkaterStats {
@@ -205,6 +208,7 @@ export interface LiveGame {
 	status: string;
 	period: string;
 	clock: string;
+	clock_running: boolean;
 	home_score: number;
 	visitor_score: number;
 	power_play: { home: boolean; visitor: boolean };
