@@ -72,25 +72,31 @@ async def fetch_live_games() -> dict:
         response.raise_for_status()
         live_games = response.json()
 
-    clock_data = live_games["publishedclock"][1]["games"]
+    published_clock_data = live_games["publishedclock"][1]["games"]
+    running_clock_data = live_games["runningclock"]["games"]
     goals_data = live_games["goals"][1]["games"]
     penalty_data = live_games["penalties"][1]["games"]
     shots_data = live_games["shotssummary"][1]["games"]
 
     games = {}
 
-    for game_id, clock in clock_data.items():
+    for game_id, clock in published_clock_data.items():
+        running_clock = running_clock_data.get(game_id, {}).get("Clock", {})
         game_goals = goals_data.get(game_id, {}).get("GameGoals", {})
         game_penalties = penalty_data.get(game_id, {}).get("GamePenalties", {})
         game_shots = shots_data.get(game_id, {})
 
         home_score, visitor_score, goals = _parse_goals(game_goals)
 
+        clock_minutes = int(running_clock.get("Minutes", clock["ClockMinutes"]))
+        clock_seconds = int(running_clock.get("Seconds", clock["ClockSeconds"]))
+
         games[game_id] = {
             "game_id": game_id,
             "status": clock["ProgressString"],
             "period": clock["PeriodLongName"],
-            "clock": _format_clock(clock["ClockMinutes"], clock["ClockSeconds"]),
+            "clock": _format_clock(clock_minutes, clock_seconds),
+            "clock_running": running_clock.get("Running", False),
             "home_score": home_score,
             "visitor_score": visitor_score,
             "power_play": _parse_power_play(game_penalties),

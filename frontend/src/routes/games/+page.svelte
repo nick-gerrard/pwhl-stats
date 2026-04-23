@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from 'svelte';
 	import { PUBLIC_API_URL } from '$env/static/public';
 	import SeasonSelector from '$lib/components/SeasonSelector.svelte';
 	import type { LiveGame } from '$lib/types';
@@ -67,6 +68,19 @@
 		return `${home} – ${away}`;
 	}
 
+	let tickedClocks: Record<string, string> = $state({});
+	let runningGames: Record<string, boolean> = $state({});
+
+	function parseClockSeconds(clock: string): number {
+		const [min, sec] = clock.split(':').map(Number);
+		return min * 60 + sec;
+	}
+
+	function formatClock(totalSeconds: number): string {
+		const s = Math.max(0, totalSeconds);
+		return `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+	}
+
 	$effect(() => {
 		if (todayGames.length === 0) return;
 
@@ -76,6 +90,24 @@
 		};
 
 		return () => es.close();
+	});
+
+	$effect(() => {
+		for (const [id, game] of Object.entries(liveScores)) {
+			tickedClocks[id] = game.clock;
+			runningGames[id] = game.clock_running;
+		}
+	});
+
+	onMount(() => {
+		const interval = setInterval(() => {
+			for (const [id, running] of Object.entries(runningGames)) {
+				if (running && tickedClocks[id]) {
+					tickedClocks[id] = formatClock(parseClockSeconds(tickedClocks[id]) - 1);
+				}
+			}
+		}, 1000);
+		return () => clearInterval(interval);
 	});
 </script>
 
@@ -142,7 +174,7 @@
 					{#if live.status === 'In Progress'}
 						<div class="flex items-center gap-1">
 							<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500"></span>
-							<span class="text-xs text-zinc-300">{live.period} · {live.clock}</span>
+							<span class="text-xs text-zinc-300">{live.period} · {tickedClocks[String(game.api_id)] ?? live.clock}</span>
 						</div>
 						<span class="text-xs text-zinc-500">{live.home_shots}–{live.visitor_shots} SOG</span>
 					{:else}
@@ -172,7 +204,7 @@
 					{#if live.status === 'In Progress'}
 						<div class="mt-0.5 flex items-center gap-1.5">
 							<span class="h-1.5 w-1.5 animate-pulse rounded-full bg-red-500"></span>
-							<span class="text-xs text-zinc-300">{live.period} · {live.clock}</span>
+							<span class="text-xs text-zinc-300">{live.period} · {tickedClocks[String(game.api_id)] ?? live.clock}</span>
 						</div>
 					{:else}
 						<span class="mt-0.5 rounded bg-zinc-700 px-2 py-0.5 text-xs text-zinc-300">Final</span>

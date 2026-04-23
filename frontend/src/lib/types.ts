@@ -132,6 +132,7 @@ export interface LiveGame {
 	status: string;
 	period: string;
 	clock: string;
+	clock_running: boolean;
 	home_score: number;
 	visitor_score: number;
 	power_play: { home: boolean; visitor: boolean };
