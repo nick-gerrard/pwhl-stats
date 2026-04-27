@@ -126,7 +126,7 @@
 <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 	<h1 class="text-2xl font-bold">Schedule & Scores</h1>
 	<div class="flex w-full gap-2 sm:w-auto">
-		<SeasonSelector seasons={data.regularSeasons} class="min-w-0 flex-1 sm:flex-none" />
+		<SeasonSelector seasons={data.allSeasons} class="min-w-0 flex-1 sm:flex-none" />
 		<select
 			bind:value={teamFilter}
 			class="min-w-0 flex-1 rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300

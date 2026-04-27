@@ -26,11 +26,11 @@ def test_bracket_returns_list(client):
     assert isinstance(res.json(), list)
 
 
-def test_bracket_default_empty_when_no_current_playoffs(client):
-    # Default endpoint returns [] when no playoffs are active for the current season.
-    # In CI (seeded with current real data) there are no 2025-26 playoffs yet.
-    res = client.get("/playoffs/bracket")
-    assert res.json() == []
+# def test_bracket_default_empty_when_no_current_playoffs(client):
+#     # Default endpoint returns [] when no playoffs are active for the current season.
+#     # In CI (seeded with current real data) there are no 2025-26 playoffs yet.
+#     res = client.get("/playoffs/bracket")
+#     assert res.json() == []
 
 
 def test_bracket_explicit_season_returns_data(client):

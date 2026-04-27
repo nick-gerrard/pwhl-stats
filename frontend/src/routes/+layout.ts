@@ -8,6 +8,7 @@ export async function load({ fetch }) {
 	const seasons: Season[] = await res.json();
 	return {
 		regularSeasons: seasons.filter((s) => s.season_type === 'regular'),
-		playoffSeasons: seasons.filter((s) => s.season_type === 'playoff')
+		playoffSeasons: seasons.filter((s) => s.season_type === 'playoff'),
+		allSeasons: seasons
 	};
 }
