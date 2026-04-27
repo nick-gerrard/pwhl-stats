@@ -89,6 +89,7 @@ export interface Season {
 export interface PlayoffTeam {
 	name: string;
 	code: string;
+	logo_url: string | null;
 }
 
 export interface PlayoffSeries {

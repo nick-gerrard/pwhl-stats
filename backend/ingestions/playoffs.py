@@ -43,15 +43,34 @@ async def run():
                         round_id = (await cur.fetchone())[0]
 
                     for matchup in round_data.get("matchups", []):
-                        team1_id = team_id_map.get(matchup["team1"])
-                        team2_id = team_id_map.get(matchup["team2"])
+                        first_game = matchup["games"][0] if matchup.get("games") else None
+                        team1_id = (
+                            team_id_map.get(matchup["team1"])
+                            or team_id_map.get(first_game["home_team"])
+                            if first_game
+                            else None
+                        )
+                        team2_id = (
+                            team_id_map.get(matchup["team2"])
+                            or team_id_map.get(first_game["visiting_team"])
+                            if first_game
+                            else None
+                        )
 
                         if team1_id is None or team2_id is None:
                             print(f"Skipping series {matchup['series_letter']} — unknown team")
                             continue
 
-                        feeder1 = matchup["feeder_series1"] if matchup["feeder_series1"] != "N/A" else None
-                        feeder2 = matchup["feeder_series2"] if matchup["feeder_series2"] != "N/A" else None
+                        feeder1 = (
+                            matchup["feeder_series1"]
+                            if matchup["feeder_series1"] != "N/A"
+                            else None
+                        )
+                        feeder2 = (
+                            matchup["feeder_series2"]
+                            if matchup["feeder_series2"] != "N/A"
+                            else None
+                        )
 
                         # RETURNING id lets us immediately use the series id to link games below,
                         # without a second query to look it up.

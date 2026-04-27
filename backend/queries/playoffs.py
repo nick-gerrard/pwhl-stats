@@ -15,8 +15,10 @@ async def get_bracket(conn: AsyncConnection, season_id: int) -> list[dict]:
                 ps.team2_wins,
                 ps.is_active,
                 t1.name  AS team1_name,
+                t1.logo_url  AS team1_logo_url,
                 t1.code  AS team1_code,
                 t2.name  AS team2_name,
+                t2.logo_url AS team2_logo_url,
                 t2.code  AS team2_code
             FROM playoff_rounds pr
             JOIN playoff_series ps ON ps.round_id = pr.id
@@ -43,8 +45,16 @@ async def get_bracket(conn: AsyncConnection, season_id: int) -> list[dict]:
             {
                 "series_letter": row["series_letter"],
                 "series_name": row["series_name"],
-                "team1": {"name": row["team1_name"], "code": row["team1_code"]},
-                "team2": {"name": row["team2_name"], "code": row["team2_code"]},
+                "team1": {
+                    "name": row["team1_name"],
+                    "code": row["team1_code"],
+                    "logo_url": row["team1_logo_url"],
+                },
+                "team2": {
+                    "name": row["team2_name"],
+                    "code": row["team2_code"],
+                    "logo_url": row["team2_logo_url"],
+                },
                 "team1_wins": row["team1_wins"],
                 "team2_wins": row["team2_wins"],
                 "is_active": row["is_active"],

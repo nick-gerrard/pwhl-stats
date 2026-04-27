@@ -140,6 +140,7 @@ class Game(BaseModel):
 class PlayoffTeam(BaseModel):
     name: str
     code: str
+    logo_url: str
 
 
 class PlayoffSeries(BaseModel):
