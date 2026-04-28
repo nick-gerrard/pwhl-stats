@@ -13,6 +13,8 @@ from queries.stats import (
     get_player_info,
     get_skater_leaders,
     get_skater_stats,
+    get_all_goalies,
+    get_all_players,
 )
 from schemas import (
     GoalieCareerInfo,
@@ -23,6 +25,7 @@ from schemas import (
     SkaterCareerInfo,
     SkaterLeaderboard,
     SkaterStats,
+    BasePlayers,
 )
 
 router = APIRouter(prefix="/stats", tags=["stats"])
@@ -33,6 +36,11 @@ async def skater_stats(season_id: int | None = None, conn: AsyncConnection = Dep
     if season_id is None:
         season_id = await get_current_regular_season_id(conn)
     return await get_skater_stats(conn, season_id)
+
+
+@router.get("/skaters/all", response_model=list[BasePlayers])
+async def all_players(conn: AsyncConnection = Depends(get_conn)):
+    return await get_all_players(conn)
 
 
 @router.get("/skaters/leaderboard", response_model=list[SkaterLeaderboard])
@@ -71,6 +79,11 @@ async def goalie_stats(season_id: int | None = None, conn: AsyncConnection = Dep
     if season_id is None:
         season_id = await get_current_regular_season_id(conn)
     return await get_goalie_stats(conn, season_id)
+
+
+@router.get("/goalies/all", response_model=list[BasePlayers])
+async def all_goalies(conn: AsyncConnection = Depends(get_conn)):
+    return await get_all_goalies(conn)
 
 
 @router.get("/goalies/leaderboard", response_model=list[GoalieLeaderboard])

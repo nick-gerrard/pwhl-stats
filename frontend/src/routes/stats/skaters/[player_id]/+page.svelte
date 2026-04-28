@@ -10,6 +10,23 @@
 
 	let imgError = $state(false);
 
+	const totals = $derived(
+		career.reduce(
+			(acc, row) => ({
+				games_played: acc.games_played + row.games_played,
+				goals: acc.goals + row.goals,
+				assists: acc.assists + row.assists,
+				pim: acc.pim + row.pim,
+				shots: acc.shots + row.shots,
+				pp_goals: acc.pp_goals + row.pp_goals,
+				sh_goals: acc.sh_goals + row.sh_goals,
+				gw_goals: acc.gw_goals + row.gw_goals,
+				plus_minus: acc.plus_minus + row.plus_minus
+			}),
+			{ games_played: 0, goals: 0, assists: 0, pim: 0, shots: 0, pp_goals: 0, sh_goals: 0, gw_goals: 0, plus_minus: 0 }
+		)
+	);
+
 	function seasonLabel(startDate: string, endDate: string) {
 		const startYear = new Date(startDate).getFullYear();
 		const endYear = new Date(endDate).getFullYear();
@@ -118,6 +135,23 @@
 						<td class="hidden px-4 py-3 text-center text-zinc-300 sm:table-cell">{row.gw_goals}</td>
 					</tr>
 				{/each}
+				{#if career.length > 1}
+					<tr class="border-t-2 border-zinc-700 bg-zinc-900">
+						<td class="px-4 py-3 font-semibold text-zinc-300">Career</td>
+						<td class="hidden px-4 py-3 sm:table-cell"></td>
+						<td class="px-4 py-3 text-center font-semibold text-zinc-300">{totals.games_played}</td>
+						<td class="px-4 py-3 text-center font-semibold text-zinc-300">{totals.goals}</td>
+						<td class="px-4 py-3 text-center font-semibold text-zinc-300">{totals.assists}</td>
+						<td class="px-4 py-3 text-center font-bold text-white">{totals.goals + totals.assists}</td>
+						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.plus_minus > 0 ? '+' : ''}{totals.plus_minus}</td>
+						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.pim}</td>
+						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.shots}</td>
+						<td class="hidden px-4 py-3 text-center sm:table-cell"></td>
+						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.pp_goals}</td>
+						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.sh_goals}</td>
+						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.gw_goals}</td>
+					</tr>
+				{/if}
 			</tbody>
 		</table>
 	</div>

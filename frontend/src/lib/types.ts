@@ -14,6 +14,11 @@ export interface Standing {
 	eliminated: boolean;
 }
 
+export interface BasePlayers {
+	player_id: number;
+	name: string;
+}
+
 export interface SkaterStats {
 	player_id: number;
 	first_name: string;
@@ -176,6 +181,7 @@ export interface GoalieCareerInfo {
 }
 
 export interface SkaterLeaderboard {
+	player_id: number;
 	first_name: string;
 	last_name: string;
 	team_name: string;
@@ -185,6 +191,7 @@ export interface SkaterLeaderboard {
 }
 
 export interface GoalieLeaderboard {
+	player_id: number;
 	first_name: string;
 	last_name: string;
 	team_name: string;

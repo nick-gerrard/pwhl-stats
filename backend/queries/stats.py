@@ -18,6 +18,17 @@ async def get_skater_stats(conn: AsyncConnection, season_id: int) -> list[dict]:
         return await cur.fetchall()
 
 
+async def get_all_players(conn: AsyncConnection) -> list[dict]:
+    async with conn.cursor(row_factory=dict_row) as cur:
+        await cur.execute(
+            """
+            SELECT id AS player_id, first_name || ' ' || last_name AS name
+            FROM players WHERE position != 'G'
+            """
+        )
+        return await cur.fetchall()
+
+
 async def get_goalie_stats(conn: AsyncConnection, season_id: int) -> list[dict]:
     async with conn.cursor(row_factory=dict_row) as cur:
         await cur.execute(
@@ -29,6 +40,17 @@ async def get_goalie_stats(conn: AsyncConnection, season_id: int) -> list[dict]:
             WHERE gs.season_id = %s
             ORDER BY save_percentage DESC""",
             (season_id,),
+        )
+        return await cur.fetchall()
+
+
+async def get_all_goalies(conn: AsyncConnection) -> list[dict]:
+    async with conn.cursor(row_factory=dict_row) as cur:
+        await cur.execute(
+            """
+            SELECT id AS player_id, first_name || ' ' || last_name AS name
+            FROM players WHERE position = 'G'
+            """
         )
         return await cur.fetchall()
 
@@ -119,7 +141,7 @@ async def get_skater_leaders(conn: AsyncConnection, season_id: int, stat="goals"
 
         await cur.execute(
             sql.SQL("""
-            SELECT p.first_name, p.last_name, t.name as team_name,
+            SELECT p.id AS player_id, p.first_name, p.last_name, t.name as team_name,
             ss.goals, ss.assists, ss.goals + ss.assists AS points
             FROM skater_stats ss
             JOIN players p on p.id = ss.player_id
@@ -141,7 +163,7 @@ async def get_goalie_leaders(conn: AsyncConnection, season_id: int, stat="wins")
 
         await cur.execute(
             sql.SQL("""
-            SELECT p.first_name, p.last_name, t.name as team_name,
+            SELECT p.id AS player_id, p.first_name, p.last_name, t.name as team_name,
             gs.wins, gs.save_percentage, gs.shutouts, gs.gaa
             FROM goalie_stats gs
             JOIN players p on p.id = gs.player_id

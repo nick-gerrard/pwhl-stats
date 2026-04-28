@@ -28,6 +28,11 @@ class Player(BaseModel):
     position: str | None
 
 
+class BasePlayers(BaseModel):
+    player_id: int
+    name: str
+
+
 class SkaterStats(BaseModel):
     player_id: int
     first_name: str
@@ -63,9 +68,9 @@ class PlayerInfo(BaseModel):
 
 class SkaterCareerInfo(PlayerInfo):
     api_id: int
-    season_id: int
-    start_date: date
-    end_date: date
+    season_id: int | None
+    start_date: date | None
+    end_date: date | None
 
 
 class GoalieStats(BaseModel):
@@ -103,9 +108,9 @@ class GoalieInfo(BaseModel):
 
 class GoalieCareerInfo(GoalieInfo):
     api_id: int
-    season_id: int
-    start_date: date
-    end_date: date
+    season_id: int | None
+    start_date: date | None
+    end_date: date | None
 
 
 class Standing(BaseModel):
@@ -166,13 +171,15 @@ class Leaderboard(BaseModel):
 
 
 class GoalieLeaderboard(Leaderboard):
+    player_id: int
     wins: int
     save_percentage: float
     shutouts: int
-    gaa: float | None | None
+    gaa: float | None
 
 
 class SkaterLeaderboard(Leaderboard):
+    player_id: int
     goals: int
     assists: int
     points: int

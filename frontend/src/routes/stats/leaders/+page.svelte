@@ -15,7 +15,8 @@
 			players: data.skaterLeaders.goals.map((p: SkaterLeaderboard) => ({
 				name: `${p.first_name} ${p.last_name}`,
 				team: p.team_name,
-				display: p.goals.toString()
+				display: p.goals.toString(),
+				href: `/stats/skaters/${p.player_id}`
 			}))
 		},
 		{
@@ -23,7 +24,8 @@
 			players: data.skaterLeaders.assists.map((p: SkaterLeaderboard) => ({
 				name: `${p.first_name} ${p.last_name}`,
 				team: p.team_name,
-				display: p.assists.toString()
+				display: p.assists.toString(),
+				href: `/stats/skaters/${p.player_id}`
 			}))
 		},
 		{
@@ -31,7 +33,8 @@
 			players: data.skaterLeaders.points.map((p: SkaterLeaderboard) => ({
 				name: `${p.first_name} ${p.last_name}`,
 				team: p.team_name,
-				display: p.points.toString()
+				display: p.points.toString(),
+				href: `/stats/skaters/${p.player_id}`
 			}))
 		}
 	];
@@ -42,7 +45,8 @@
 			players: data.goalieLeaders.wins.map((p: GoalieLeaderboard) => ({
 				name: `${p.first_name} ${p.last_name}`,
 				team: p.team_name,
-				display: p.wins.toString()
+				display: p.wins.toString(),
+				href: `/stats/goalies/${p.player_id}`
 			}))
 		},
 		{
@@ -50,7 +54,8 @@
 			players: data.goalieLeaders.savePct.map((p: GoalieLeaderboard) => ({
 				name: `${p.first_name} ${p.last_name}`,
 				team: p.team_name,
-				display: formatSvPct(p.save_percentage)
+				display: formatSvPct(p.save_percentage),
+				href: `/stats/goalies/${p.player_id}`
 			}))
 		},
 		{
@@ -58,7 +63,8 @@
 			players: data.goalieLeaders.shutouts.map((p: GoalieLeaderboard) => ({
 				name: `${p.first_name} ${p.last_name}`,
 				team: p.team_name,
-				display: p.shutouts.toString()
+				display: p.shutouts.toString(),
+				href: `/stats/goalies/${p.player_id}`
 			}))
 		}
 	];
@@ -70,7 +76,7 @@
 
 <h1 class="mb-8 text-2xl font-bold">Leaders</h1>
 
-{#snippet leaderCard(title: string, players: { name: string; team: string; display: string }[])}
+{#snippet leaderCard(title: string, players: { name: string; team: string; display: string; href: string }[])}
 	<div class="rounded-xl border border-zinc-800 bg-zinc-900">
 		<div class="border-b border-zinc-800 px-4 py-3">
 			<h3 class="font-semibold text-white">{title}</h3>
@@ -84,7 +90,7 @@
 				>
 					<span class="w-5 shrink-0 text-center text-sm text-zinc-500">{i + 1}</span>
 					<div class="min-w-0 flex-1">
-						<p class="truncate text-sm font-medium text-white">{player.name}</p>
+						<a href={player.href} class="truncate text-sm font-medium text-white hover:text-pwhl-light hover:underline">{player.name}</a>
 						<p class="truncate text-xs text-zinc-500">{player.team}</p>
 					</div>
 					<span class="shrink-0 text-sm font-bold text-pwhl-light">{player.display}</span>

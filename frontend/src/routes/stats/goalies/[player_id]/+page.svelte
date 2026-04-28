@@ -10,6 +10,22 @@
 
 	let imgError = $state(false);
 
+	const totals = $derived(
+		career.reduce(
+			(acc, row) => ({
+				games_played: acc.games_played + row.games_played,
+				wins: acc.wins + row.wins,
+				losses: acc.losses + row.losses,
+				ot_losses: acc.ot_losses + row.ot_losses,
+				shutouts: acc.shutouts + row.shutouts,
+				shots_against: acc.shots_against + row.shots_against,
+				goals_against: acc.goals_against + row.goals_against,
+				minutes_played: acc.minutes_played + row.minutes_played
+			}),
+			{ games_played: 0, wins: 0, losses: 0, ot_losses: 0, shutouts: 0, shots_against: 0, goals_against: 0, minutes_played: 0 }
+		)
+	);
+
 	function seasonLabel(startDate: string, endDate: string) {
 		const startYear = new Date(startDate).getFullYear();
 		const endYear = new Date(endDate).getFullYear();
@@ -124,6 +140,21 @@
 						<td class="hidden px-4 py-3 text-center text-zinc-300 sm:table-cell">{formatGaa(row.gaa)}</td>
 					</tr>
 				{/each}
+				{#if career.length > 1}
+					<tr class="border-t-2 border-zinc-700 bg-zinc-900">
+						<td class="px-4 py-3 font-semibold text-zinc-300">Career</td>
+						<td class="hidden px-4 py-3 sm:table-cell"></td>
+						<td class="px-4 py-3 text-center font-semibold text-zinc-300">{totals.games_played}</td>
+						<td class="px-4 py-3 text-center font-semibold text-zinc-300">{totals.wins}</td>
+						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.losses}</td>
+						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.ot_losses}</td>
+						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.shutouts}</td>
+						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.shots_against}</td>
+						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.goals_against}</td>
+						<td class="px-4 py-3 text-center font-bold text-white sm:table-cell"></td>
+						<td class="hidden px-4 py-3 text-center sm:table-cell"></td>
+					</tr>
+				{/if}
 			</tbody>
 		</table>
 	</div>
