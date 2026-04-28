@@ -9,7 +9,7 @@ def test_standings_return_list(client):
     assert isinstance(data, list)
 
 
-def test_standings_shap(client):
+def test_standings_shape(client):
     res = client.get("/standings")
     data = res.json()
     assert len(data) > 0
