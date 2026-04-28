@@ -27,6 +27,20 @@ async def get_current_season(conn) -> tuple[int, int]:
         return season[0], season[1]
 
 
+async def get_current_regular_season_id(conn) -> int:
+    """
+    Returns most recent regular season id in the db.
+    """
+    async with conn.cursor() as cur:
+        await cur.execute(
+            "SELECT id FROM seasons WHERE season_type = 'regular' ORDER BY start_date DESC LIMIT 1"
+        )
+        season = await cur.fetchone()
+        if season is None:
+            raise RuntimeError("No season found in database.")
+        return season[0]
+
+
 async def get_current_playoff_season_id(conn) -> int | None:
     """
     Returns the internal id of the most recent playoff season, but only if it belongs
