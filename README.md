@@ -8,12 +8,17 @@ Live at **[pwhl.nickgerrard.dev](https://pwhl.nickgerrard.dev)**
 
 ## Features
 
-- **Standings** — full league standings with regulation wins, OT/SO splits, and points
+- **Standings** — full league standings with regulation wins, OT/SO splits, points, and clinch/elimination indicators
 - **Schedule & Scores** — game results and upcoming schedule with team filters
-- **Live Game Updates** — real-time score, period, clock, power play indicators, and SOG via Server-Sent Events
-- **Skater & Goalie Stats** — sortable, filterable stat tables with per-player detail modals
-- **Playoff Bracket** — live bracket with series scores and matchup tracking
-- **Season Selector** — toggle between seasons on any page
+- **Live Game Updates** — real-time score, period, clock, power play indicators, shots on goal, and goal log via Server-Sent Events
+- **Skater Stats** — sortable, filterable stat tables; click any player to open a side drawer with season stats, shooting stats, profile, and photo
+- **Goalie Stats** — sortable, filterable stat tables with the same side drawer treatment
+- **Player & Goalie Career Pages** — full season-by-season career stats with career totals
+- **Stat Leaders** — top-5 leaderboard cards for goals, assists, points, and save percentage
+- **Head-to-Head Compare** — side-by-side career stat comparison for two skaters or two goalies
+- **Playoff Bracket** — live bracket with series scores, team logos, and TBD placeholders
+- **Season Selector** — toggle between regular seasons on any stats page
+- **PWA Support** — installable via Safari → Share → Add to Home Screen
 - **Responsive Design** — tailored layouts for mobile and desktop throughout
 
 ---
@@ -34,7 +39,7 @@ Live at **[pwhl.nickgerrard.dev](https://pwhl.nickgerrard.dev)**
 
 **Infrastructure**
 - Linode Nanode (1 GB) — nginx reverse proxy + systemd service
-- GitHub Actions CI/CD — tests on every PR, deploy to Linode on merge to main
+- GitHub Actions CI/CD — deploy to Linode on merge to main
 
 ---
 
@@ -49,7 +54,6 @@ pwhl-stats/
 │   ├── queries/          # Async SQL query functions
 │   ├── routers/          # FastAPI route handlers
 │   ├── main.py           # App entrypoint, lifespan, scheduler setup
-│   ├── models.py
 │   ├── schemas.py        # Pydantic response models
 │   └── settings.py       # Environment config
 └── frontend/
@@ -57,13 +61,18 @@ pwhl-stats/
         ├── lib/
         │   ├── components/   # Nav, SeasonSelector, Logo, Pagination
         │   └── types.ts
-        └── routes/           # SvelteKit file-based routes
-            ├── +page.svelte          # Standings
-            ├── games/
-            ├── stats/skaters/
-            ├── stats/goalies/
-            ├── playoffs/
-            └── about/
+        └── routes/
+            ├── +page.svelte                      # Standings
+            ├── games/                            # Schedule & scores
+            ├── playoffs/                         # Playoff bracket
+            ├── about/
+            └── stats/
+                ├── skaters/                      # Skater stats table
+                ├── skaters/[player_id]/          # Skater career page
+                ├── goalies/                      # Goalie stats table
+                ├── goalies/[player_id]/          # Goalie career page
+                ├── leaders/                      # Stat leaders
+                └── compare/                      # Head-to-head comparison
 ```
 
 ---
@@ -74,14 +83,21 @@ pwhl-stats/
 |--------|-------|-------------|
 | GET | `/standings` | League standings |
 | GET | `/games` | Schedule and scores |
-| GET | `/stats/skaters` | Skater stats |
-| GET | `/stats/skaters/{player_id}` | Skater detail |
-| GET | `/stats/goalies` | Goalie stats |
-| GET | `/stats/goalies/{player_id}` | Goalie detail |
-| GET | `/playoffs` | Playoff bracket |
+| GET | `/stats/skaters` | Skater stats (current season) |
+| GET | `/stats/skaters/all` | All skaters as `{player_id, name}` (for search) |
+| GET | `/stats/skaters/leaderboard` | Top skaters by stat category |
+| GET | `/stats/skaters/{player_id}` | Skater season detail |
+| GET | `/stats/skaters/{player_id}/career` | Skater career history |
+| GET | `/stats/goalies` | Goalie stats (current season) |
+| GET | `/stats/goalies/all` | All goalies as `{player_id, name}` (for search) |
+| GET | `/stats/goalies/leaderboard` | Top goalies by stat category |
+| GET | `/stats/goalies/{player_id}` | Goalie season detail |
+| GET | `/stats/goalies/{player_id}/career` | Goalie career history |
+| GET | `/playoffs/bracket` | Playoff bracket |
 | GET | `/live` | SSE stream of live game data |
 | GET | `/teams` | All teams |
 | GET | `/seasons` | All seasons |
+| GET | `/players` | All players |
 | POST | `/admin/ingest` | Trigger data ingestion (requires `X-Admin-Token` header) |
 
 Interactive docs available at `/docs` when running locally.
@@ -100,10 +116,6 @@ Interactive docs available at `/docs` when running locally.
 
 Root `.env`:
 ```
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_NAME=pwhl
-
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/pwhl
 ADMIN_TOKEN=localdev
 ```
@@ -150,10 +162,7 @@ Frontend at `http://localhost:5173`
 
 ## Roadmap
 
-- [ ] Player comparison — side-by-side stat view between two players
-- [ ] Historical season stats — season-over-season progression per player
-- [ ] Pace stats — goals/60, shots/60, normalised across ice time
-- [ ] Game detail page — box score using the existing `game_periods` table
-- [ ] Team detail page — roster, record, and stat leaders
+- [ ] Game detail page — score summary, venue, attendance, and goal log for completed games
+- [ ] Team detail page — roster, record, and stat leaders per team
 - [ ] Game log — per-player game-by-game stat breakdown
-- [ ] Stat leaders dashboard — top-5-per-category overview on the home page
+- [ ] Pace stats — goals/60, shots/60, normalised across ice time

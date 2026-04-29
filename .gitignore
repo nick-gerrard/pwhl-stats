@@ -40,6 +40,9 @@ Thumbs.db
 # Docker
 docker-compose.override.yml
 
+#PGSQL
+schema.txt
+
 #Claude
 memory/
 .claude/
