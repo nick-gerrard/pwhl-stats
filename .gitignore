@@ -41,4 +41,4 @@ Thumbs.db
 docker-compose.override.yml
 
 #Claude
-memory
+memory/
