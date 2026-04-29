@@ -181,24 +181,22 @@
 		{#if leftLoading}
 			<p class="text-sm text-zinc-500">Loading...</p>
 		{:else if leftPlayer}
-			<div class="flex items-center gap-4">
+			<div class="flex flex-col items-center gap-2 text-center">
 				{#if !leftImgError}
 					<img
 						src="https://assets.leaguestat.com/pwhl/240x240/{leftPlayer.api_id}.jpg"
 						alt="{leftPlayer.first_name} {leftPlayer.last_name}"
 						onerror={() => (leftImgError = true)}
-						class="h-16 w-16 rounded-full object-cover ring-2 ring-zinc-700"
+						class="h-20 w-20 rounded-full object-cover ring-2 ring-zinc-700"
 					/>
 				{/if}
-				<div>
-					<p class="text-xs font-medium uppercase tracking-widest text-pwhl-light">
-						{leftPlayer.position ?? 'Skater'} · {leftPlayer.team_name}
-					</p>
-					<h2 class="text-xl font-bold text-white">
-						{leftPlayer.first_name}
-						{leftPlayer.last_name}
-					</h2>
-				</div>
+				<p class="text-xs font-medium uppercase tracking-wider text-pwhl-light">
+					{leftPlayer.team_name}
+				</p>
+				<h2 class="text-xl font-bold leading-tight text-white">
+					{leftPlayer.first_name}
+					{leftPlayer.last_name}
+				</h2>
 			</div>
 		{:else}
 			<p class="text-sm text-zinc-500">Select a player</p>
@@ -209,24 +207,22 @@
 		{#if rightLoading}
 			<p class="text-sm text-zinc-500">Loading...</p>
 		{:else if rightPlayer}
-			<div class="flex items-center gap-4">
+			<div class="flex flex-col items-center gap-2 text-center">
 				{#if !rightImgError}
 					<img
 						src="https://assets.leaguestat.com/pwhl/240x240/{rightPlayer.api_id}.jpg"
 						alt="{rightPlayer.first_name} {rightPlayer.last_name}"
 						onerror={() => (rightImgError = true)}
-						class="h-16 w-16 rounded-full object-cover ring-2 ring-zinc-700"
+						class="h-20 w-20 rounded-full object-cover ring-2 ring-zinc-700"
 					/>
 				{/if}
-				<div>
-					<p class="text-xs font-medium uppercase tracking-widest text-pwhl-light">
-						{rightPlayer.position ?? 'Skater'} · {rightPlayer.team_name}
-					</p>
-					<h2 class="text-xl font-bold text-white">
-						{rightPlayer.first_name}
-						{rightPlayer.last_name}
-					</h2>
-				</div>
+				<p class="text-xs font-medium uppercase tracking-wider text-pwhl-light">
+					{rightPlayer.team_name}
+				</p>
+				<h2 class="text-xl font-bold leading-tight text-white">
+					{rightPlayer.first_name}
+					{rightPlayer.last_name}
+				</h2>
 			</div>
 		{:else}
 			<p class="text-sm text-zinc-500">Select a player</p>
