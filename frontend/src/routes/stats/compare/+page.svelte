@@ -46,7 +46,6 @@
 				shots: acc.shots + row.shots,
 				pp_goals: acc.pp_goals + row.pp_goals,
 				sh_goals: acc.sh_goals + row.sh_goals,
-				gw_goals: acc.gw_goals + row.gw_goals,
 				plus_minus: acc.plus_minus + row.plus_minus
 			}),
 			{
@@ -57,7 +56,6 @@
 				shots: 0,
 				pp_goals: 0,
 				sh_goals: 0,
-				gw_goals: 0,
 				plus_minus: 0
 			}
 		);
@@ -81,8 +79,7 @@
 					{ label: 'PIM', left: leftTotals.pim, right: rightTotals.pim },
 					{ label: 'SOG', left: leftTotals.shots, right: rightTotals.shots },
 					{ label: 'PPG', left: leftTotals.pp_goals, right: rightTotals.pp_goals },
-					{ label: 'SHG', left: leftTotals.sh_goals, right: rightTotals.sh_goals },
-					{ label: 'GWG', left: leftTotals.gw_goals, right: rightTotals.gw_goals }
+					{ label: 'SHG', left: leftTotals.sh_goals, right: rightTotals.sh_goals }
 				]
 			: []
 	);

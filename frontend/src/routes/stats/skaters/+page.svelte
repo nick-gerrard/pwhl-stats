@@ -106,6 +106,11 @@
 			day: 'numeric'
 		});
 	}
+
+	function formatHeight(inches: number | null) {
+		if (!inches) return '—';
+		return `${Math.floor(inches / 12)}'${inches % 12}"`;
+	}
 </script>
 
 <svelte:head>
@@ -308,10 +313,6 @@
 							<p class="text-2xl font-bold text-white">{selectedPlayer.sh_goals}</p>
 							<p class="text-xs text-zinc-500">SHG</p>
 						</div>
-						<div>
-							<p class="text-2xl font-bold text-white">{selectedPlayer.gw_goals}</p>
-							<p class="text-xs text-zinc-500">GWG</p>
-						</div>
 					</div>
 				</div>
 
@@ -329,7 +330,7 @@
 						</div>
 						<div class="flex justify-between">
 							<span class="text-zinc-500">Height</span>
-							<span class="text-zinc-200">{selectedPlayer.height ? `${selectedPlayer.height} in` : '—'}</span>
+							<span class="text-zinc-200">{formatHeight(selectedPlayer.height)}</span>
 						</div>
 						<div class="flex justify-between">
 							<span class="text-zinc-500">Weight</span>

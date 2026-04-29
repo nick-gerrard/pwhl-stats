@@ -85,6 +85,11 @@
 		});
 	}
 
+	function formatHeight(inches: number | null) {
+		if (!inches) return '—';
+		return `${Math.floor(inches / 12)}'${inches % 12}"`;
+	}
+
 	async function openGoalie(player_id: number) {
 		drawerOpen = true;
 		loading = true;
@@ -312,7 +317,7 @@
 						</div>
 						<div class="flex justify-between">
 							<span class="text-zinc-500">Height</span>
-							<span class="text-zinc-200">{selectedGoalie.height ? `${selectedGoalie.height} in` : '—'}</span>
+							<span class="text-zinc-200">{formatHeight(selectedGoalie.height)}</span>
 						</div>
 						<div class="flex justify-between">
 							<span class="text-zinc-500">Weight</span>
