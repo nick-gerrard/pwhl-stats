@@ -20,12 +20,16 @@
 				shots: acc.shots + row.shots,
 				pp_goals: acc.pp_goals + row.pp_goals,
 				sh_goals: acc.sh_goals + row.sh_goals,
-				gw_goals: acc.gw_goals + row.gw_goals,
 				plus_minus: acc.plus_minus + row.plus_minus
 			}),
-			{ games_played: 0, goals: 0, assists: 0, pim: 0, shots: 0, pp_goals: 0, sh_goals: 0, gw_goals: 0, plus_minus: 0 }
+			{ games_played: 0, goals: 0, assists: 0, pim: 0, shots: 0, pp_goals: 0, sh_goals: 0, plus_minus: 0 }
 		)
 	);
+
+	function formatHeight(inches: number | null) {
+		if (!inches) return '—';
+		return `${Math.floor(inches / 12)}'${inches % 12}"`;
+	}
 
 	function seasonLabel(startDate: string, endDate: string) {
 		const startYear = new Date(startDate).getFullYear();
@@ -80,7 +84,7 @@
 					<span>Shoots {player.shoots}</span>
 				{/if}
 				{#if player.height}
-					<span>{player.height} in</span>
+					<span>{formatHeight(player.height)}</span>
 				{/if}
 				{#if player.weight}
 					<span>{player.weight} lbs</span>
@@ -107,7 +111,6 @@
 					<th class="hidden px-4 py-3 text-center font-medium sm:table-cell">TOI/G</th>
 					<th class="hidden px-4 py-3 text-center font-medium sm:table-cell">PPG</th>
 					<th class="hidden px-4 py-3 text-center font-medium sm:table-cell">SHG</th>
-					<th class="hidden px-4 py-3 text-center font-medium sm:table-cell">GWG</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -132,7 +135,6 @@
 						<td class="hidden px-4 py-3 text-center text-zinc-300 sm:table-cell">{row.avg_toi ?? '—'}</td>
 						<td class="hidden px-4 py-3 text-center text-zinc-300 sm:table-cell">{row.pp_goals}</td>
 						<td class="hidden px-4 py-3 text-center text-zinc-300 sm:table-cell">{row.sh_goals}</td>
-						<td class="hidden px-4 py-3 text-center text-zinc-300 sm:table-cell">{row.gw_goals}</td>
 					</tr>
 				{/each}
 				{#if career.length > 1}
@@ -149,7 +151,6 @@
 						<td class="hidden px-4 py-3 text-center sm:table-cell"></td>
 						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.pp_goals}</td>
 						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.sh_goals}</td>
-						<td class="hidden px-4 py-3 text-center font-semibold text-zinc-300 sm:table-cell">{totals.gw_goals}</td>
 					</tr>
 				{/if}
 			</tbody>

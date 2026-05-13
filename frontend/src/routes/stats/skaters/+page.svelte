@@ -19,8 +19,13 @@
 
 	let selectedPlayer = $state<PlayerInfo | null>(null);
 	let selectedPlayerId = $state<number | null>(null);
-	let modalOpen = $state(false);
+	let drawerOpen = $state(false);
 	let loading = $state(false);
+	let imgError = $state(false);
+
+	const photoUrl = $derived(
+		selectedPlayer ? `https://assets.leaguestat.com/pwhl/240x240/${selectedPlayer.api_id}.jpg` : null
+	);
 
 	const teams = $derived([...new Set(data.skaters.map((s) => s.team_name))].sort());
 
@@ -71,10 +76,11 @@
 	}
 
 	async function openPlayer(player_id: number) {
-		modalOpen = true;
+		drawerOpen = true;
 		loading = true;
 		selectedPlayer = null;
 		selectedPlayerId = player_id;
+		imgError = false;
 		const seasonId = page.url.searchParams.get('season_id');
 		const query = seasonId ? `?season_id=${seasonId}` : '';
 		const res = await fetch(`${PUBLIC_API_URL}/stats/skaters/${player_id}${query}`);
@@ -82,14 +88,14 @@
 		loading = false;
 	}
 
-	function closeModal() {
-		modalOpen = false;
+	function closeDrawer() {
+		drawerOpen = false;
 		selectedPlayer = null;
 		selectedPlayerId = null;
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') closeModal();
+		if (e.key === 'Escape') closeDrawer();
 	}
 
 	function formatDate(dateStr: string | null) {
@@ -99,6 +105,11 @@
 			month: 'short',
 			day: 'numeric'
 		});
+	}
+
+	function formatHeight(inches: number | null) {
+		if (!inches) return '—';
+		return `${Math.floor(inches / 12)}'${inches % 12}"`;
 	}
 </script>
 
@@ -186,79 +197,97 @@
 	<Pagination {currentPage} {totalPages} onPageChange={(n) => (currentPage = n)} />
 </div>
 
-<!-- Modal -->
-{#if modalOpen}
-	<!-- Backdrop -->
+<!-- Drawer backdrop -->
+{#if drawerOpen}
 	<div
 		class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
-		onclick={closeModal}
+		onclick={closeDrawer}
 		role="presentation"
 	></div>
+{/if}
 
-	<!-- Panel -->
-	<div
-		class="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-2xl rounded-t-2xl border border-zinc-700
-			bg-zinc-950 p-6 shadow-2xl sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2
-			sm:-translate-y-1/2 sm:rounded-2xl"
-		role="dialog"
-		aria-modal="true"
-	>
-		<!-- Close button -->
+<!-- Side drawer -->
+<div
+	class="fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-zinc-700 bg-zinc-950
+		shadow-2xl transition-transform duration-300 sm:w-96
+		{drawerOpen ? 'translate-x-0' : 'translate-x-full'}"
+	role="dialog"
+	aria-modal="true"
+>
+	<!-- Drawer header -->
+	<div class="flex items-center justify-between border-b border-zinc-800 px-5 py-4">
+		<span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">Player Details</span>
 		<button
-			onclick={closeModal}
-			class="absolute right-4 top-4 text-zinc-500 transition-colors hover:text-white"
+			onclick={closeDrawer}
+			class="text-zinc-500 transition-colors hover:text-white"
 			aria-label="Close"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
 				<path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
 			</svg>
 		</button>
+	</div>
 
+	<!-- Drawer body -->
+	<div class="flex-1 overflow-y-auto">
 		{#if loading}
 			<div class="flex h-48 items-center justify-center text-zinc-500">Loading...</div>
 		{:else if selectedPlayer}
-			<!-- Header -->
-			<div class="mb-6">
-				<p class="text-sm font-medium uppercase tracking-widest text-pwhl-light">
-					{selectedPlayer.position ?? 'Skater'} · {selectedPlayer.team_name}
-				</p>
-				<h2 class="mt-1 text-3xl font-bold text-white">
-					{selectedPlayer.first_name} {selectedPlayer.last_name}
-				</h2>
+			<!-- Player hero -->
+			<div class="flex items-center gap-4 border-b border-zinc-800 px-5 py-5">
+				{#if photoUrl && !imgError}
+					<img
+						src={photoUrl}
+						alt="{selectedPlayer.first_name} {selectedPlayer.last_name}"
+						onerror={() => (imgError = true)}
+						class="h-20 w-20 flex-shrink-0 rounded-full object-cover ring-2 ring-zinc-700"
+					/>
+				{:else}
+					<div class="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full bg-zinc-800 text-2xl font-bold text-zinc-600 ring-2 ring-zinc-700">
+						{selectedPlayer.first_name[0]}{selectedPlayer.last_name[0]}
+					</div>
+				{/if}
+				<div>
+					<p class="text-xs font-semibold uppercase tracking-widest text-pwhl-light">
+						{selectedPlayer.position ?? 'Skater'} · {selectedPlayer.team_name}
+					</p>
+					<h2 class="mt-0.5 text-2xl font-bold text-white">
+						{selectedPlayer.first_name} {selectedPlayer.last_name}
+					</h2>
+				</div>
 			</div>
 
-			<!-- Cards -->
-			<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+			<div class="space-y-4 p-5">
 				<!-- Season stats -->
 				<div class="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
 					<p class="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">Season</p>
-					<div class="grid grid-cols-3 gap-y-3 text-center">
+					<div class="grid grid-cols-3 gap-y-4 text-center">
 						<div>
-							<p class="text-xl font-bold text-white">{selectedPlayer.games_played}</p>
+							<p class="text-2xl font-bold text-white">{selectedPlayer.games_played}</p>
 							<p class="text-xs text-zinc-500">GP</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">{selectedPlayer.goals}</p>
+							<p class="text-2xl font-bold text-white">{selectedPlayer.goals}</p>
 							<p class="text-xs text-zinc-500">G</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">{selectedPlayer.assists}</p>
+							<p class="text-2xl font-bold text-white">{selectedPlayer.assists}</p>
 							<p class="text-xs text-zinc-500">A</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-pwhl-light">
+							<p class="text-2xl font-bold text-pwhl-light">
 								{selectedPlayer.goals + selectedPlayer.assists}
 							</p>
 							<p class="text-xs text-zinc-500">PTS</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">
+							<p class="text-2xl font-bold text-white">
 								{selectedPlayer.plus_minus > 0 ? '+' : ''}{selectedPlayer.plus_minus}
 							</p>
 							<p class="text-xs text-zinc-500">+/-</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">{selectedPlayer.pim}</p>
+							<p class="text-2xl font-bold text-white">{selectedPlayer.pim}</p>
 							<p class="text-xs text-zinc-500">PIM</p>
 						</div>
 					</div>
@@ -267,26 +296,22 @@
 				<!-- Shooting -->
 				<div class="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
 					<p class="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">Shooting</p>
-					<div class="grid grid-cols-2 gap-y-3 text-center">
+					<div class="grid grid-cols-3 gap-y-4 text-center">
 						<div>
-							<p class="text-xl font-bold text-white">{selectedPlayer.shots}</p>
+							<p class="text-2xl font-bold text-white">{selectedPlayer.shots}</p>
 							<p class="text-xs text-zinc-500">SOG</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">{selectedPlayer.avg_toi}</p>
+							<p class="text-2xl font-bold text-white">{selectedPlayer.avg_toi ?? '—'}</p>
 							<p class="text-xs text-zinc-500">TOI/G</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">{selectedPlayer.pp_goals}</p>
-							<p class="text-xs text-zinc-500">PP G</p>
+							<p class="text-2xl font-bold text-white">{selectedPlayer.pp_goals}</p>
+							<p class="text-xs text-zinc-500">PPG</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">{selectedPlayer.sh_goals}</p>
-							<p class="text-xs text-zinc-500">SH G</p>
-						</div>
-						<div class="col-span-2">
-							<p class="text-xl font-bold text-white">{selectedPlayer.gw_goals}</p>
-							<p class="text-xs text-zinc-500">GW G</p>
+							<p class="text-2xl font-bold text-white">{selectedPlayer.sh_goals}</p>
+							<p class="text-xs text-zinc-500">SHG</p>
 						</div>
 					</div>
 				</div>
@@ -300,18 +325,16 @@
 							<span class="text-zinc-200">{formatDate(selectedPlayer.birthdate)}</span>
 						</div>
 						<div class="flex justify-between">
-							<span class="text-zinc-500">Nation</span>
+							<span class="text-zinc-500">Nationality</span>
 							<span class="text-zinc-200">{selectedPlayer.nationality ?? '—'}</span>
 						</div>
 						<div class="flex justify-between">
 							<span class="text-zinc-500">Height</span>
-							<span class="text-zinc-200">{selectedPlayer.height ? `${selectedPlayer.height} in` : '—'}</span>
+							<span class="text-zinc-200">{formatHeight(selectedPlayer.height)}</span>
 						</div>
 						<div class="flex justify-between">
 							<span class="text-zinc-500">Weight</span>
-							<span class="text-zinc-200">
-								{selectedPlayer.weight ? `${selectedPlayer.weight} lbs` : '—'}
-							</span>
+							<span class="text-zinc-200">{selectedPlayer.weight ? `${selectedPlayer.weight} lbs` : '—'}</span>
 						</div>
 						<div class="flex justify-between">
 							<span class="text-zinc-500">Shoots</span>
@@ -319,15 +342,14 @@
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="mt-5 text-right">
+
 				<a
 					href="/stats/skaters/{selectedPlayerId}"
-					class="text-sm text-pwhl-light hover:underline"
+					class="block w-full rounded-lg border border-zinc-700 py-2.5 text-center text-sm font-medium text-pwhl-light transition-colors hover:border-pwhl-light hover:bg-zinc-900"
 				>
 					View full profile →
 				</a>
 			</div>
 		{/if}
 	</div>
-{/if}
+</div>

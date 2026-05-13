@@ -51,6 +51,11 @@
 			day: 'numeric'
 		});
 	}
+
+	function formatHeight(inches: number | null) {
+		if (!inches) return '—';
+		return `${Math.floor(inches / 12)}'${inches % 12}"`;
+	}
 </script>
 
 <svelte:head>
@@ -89,7 +94,7 @@
 					<span>Catches {player.shoots}</span>
 				{/if}
 				{#if player.height}
-					<span>{player.height} in</span>
+					<span>{formatHeight(player.height)}</span>
 				{/if}
 				{#if player.weight}
 					<span>{player.weight} lbs</span>

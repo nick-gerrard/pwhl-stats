@@ -4,7 +4,11 @@ import type { BasePlayers } from '$lib/types';
 export const ssr = false;
 
 export async function load({ fetch }) {
-	const res = await fetch(`${PUBLIC_API_URL}/stats/skaters/all`);
-	const players: BasePlayers[] = res.ok ? await res.json() : [];
-	return { players };
+	const [skatersRes, goaliesRes] = await Promise.all([
+		fetch(`${PUBLIC_API_URL}/stats/skaters/all`),
+		fetch(`${PUBLIC_API_URL}/stats/goalies/all`)
+	]);
+	const skaters: BasePlayers[] = skatersRes.ok ? await skatersRes.json() : [];
+	const goalies: BasePlayers[] = goaliesRes.ok ? await goaliesRes.json() : [];
+	return { skaters, goalies };
 }

@@ -62,7 +62,7 @@ async def get_player_info(conn: AsyncConnection, season_id: int, player_id: int)
                 ss.games_played, ss.goals, ss.assists, ss.pim, ss.plus_minus,
                 ss.shots, ss.avg_toi, ss.pp_goals, ss.sh_goals, ss.gw_goals,
                 p.height, p.weight, p.birthdate, p.nationality, p.shoots, p.position,
-                p.active
+                p.active, p.api_id
                 FROM skater_stats ss
                 JOIN players p ON p.id = ss.player_id
                 JOIN teams t ON t.id = ss.team_id
@@ -81,7 +81,7 @@ async def get_goalie_info(conn: AsyncConnection, season_id: int, player_id: int)
                 gs.shots_against, gs.goals_against, gs.save_percentage, gs.gaa,
                 gs.minutes_played,
                 p.height, p.weight, p.birthdate, p.nationality, p.shoots, p.position,
-                p.active
+                p.active, p.api_id
                 FROM goalie_stats gs
                 JOIN players p ON p.id = gs.player_id
                 JOIN teams t ON t.id = gs.team_id

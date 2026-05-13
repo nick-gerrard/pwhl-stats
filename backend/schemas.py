@@ -64,6 +64,7 @@ class PlayerInfo(BaseModel):
     shoots: str | None
     position: str | None
     active: bool
+    api_id: int
 
 
 class SkaterCareerInfo(PlayerInfo):
@@ -104,6 +105,7 @@ class GoalieInfo(BaseModel):
     shoots: str | None
     position: str | None
     active: bool
+    api_id: int
 
 
 class GoalieCareerInfo(GoalieInfo):

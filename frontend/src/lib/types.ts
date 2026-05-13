@@ -50,6 +50,7 @@ export interface PlayerInfo {
 	shoots: string | null;
 	position: string | null;
 	active: boolean;
+	api_id: number;
 }
 
 export interface GoalieStats {
@@ -83,6 +84,7 @@ export interface GoalieInfo {
 	shoots: string | null;
 	position: string | null;
 	active: boolean;
+	api_id: number;
 }
 
 export interface Season {

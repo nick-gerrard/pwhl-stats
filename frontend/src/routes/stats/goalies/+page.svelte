@@ -20,8 +20,13 @@
 
 	let selectedGoalie = $state<GoalieInfo | null>(null);
 	let selectedGoalieId = $state<number | null>(null);
-	let modalOpen = $state(false);
+	let drawerOpen = $state(false);
 	let loading = $state(false);
+	let imgError = $state(false);
+
+	const photoUrl = $derived(
+		selectedGoalie ? `https://assets.leaguestat.com/pwhl/240x240/${selectedGoalie.api_id}.jpg` : null
+	);
 
 	const teams = $derived([...new Set(data.goalies.map((g) => g.team_name))].sort());
 
@@ -80,11 +85,17 @@
 		});
 	}
 
+	function formatHeight(inches: number | null) {
+		if (!inches) return '—';
+		return `${Math.floor(inches / 12)}'${inches % 12}"`;
+	}
+
 	async function openGoalie(player_id: number) {
-		modalOpen = true;
+		drawerOpen = true;
 		loading = true;
 		selectedGoalie = null;
 		selectedGoalieId = player_id;
+		imgError = false;
 		const seasonId = page.url.searchParams.get('season_id');
 		const query = seasonId ? `?season_id=${seasonId}` : '';
 		const res = await fetch(`${PUBLIC_API_URL}/stats/goalies/${player_id}${query}`);
@@ -92,14 +103,14 @@
 		loading = false;
 	}
 
-	function closeModal() {
-		modalOpen = false;
+	function closeDrawer() {
+		drawerOpen = false;
 		selectedGoalie = null;
 		selectedGoalieId = null;
 	}
 
 	function handleKeydown(e: KeyboardEvent) {
-		if (e.key === 'Escape') closeModal();
+		if (e.key === 'Escape') closeDrawer();
 	}
 </script>
 
@@ -181,66 +192,89 @@
 	<Pagination {currentPage} {totalPages} onPageChange={(n) => (currentPage = n)} />
 </div>
 
-<!-- Modal -->
-{#if modalOpen}
+<!-- Drawer backdrop -->
+{#if drawerOpen}
 	<div
 		class="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
-		onclick={closeModal}
+		onclick={closeDrawer}
 		role="presentation"
 	></div>
+{/if}
 
-	<div
-		class="fixed inset-x-0 bottom-0 z-50 mx-auto max-w-2xl rounded-t-2xl border border-zinc-700
-			bg-zinc-950 p-6 shadow-2xl sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2
-			sm:-translate-y-1/2 sm:rounded-2xl"
-		role="dialog"
-		aria-modal="true"
-	>
+<!-- Side drawer -->
+<div
+	class="fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-zinc-700 bg-zinc-950
+		shadow-2xl transition-transform duration-300 sm:w-96
+		{drawerOpen ? 'translate-x-0' : 'translate-x-full'}"
+	role="dialog"
+	aria-modal="true"
+>
+	<!-- Drawer header -->
+	<div class="flex items-center justify-between border-b border-zinc-800 px-5 py-4">
+		<span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">Player Details</span>
 		<button
-			onclick={closeModal}
-			class="absolute right-4 top-4 text-zinc-500 transition-colors hover:text-white"
+			onclick={closeDrawer}
+			class="text-zinc-500 transition-colors hover:text-white"
 			aria-label="Close"
 		>
 			<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
 				<path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
 			</svg>
 		</button>
+	</div>
 
+	<!-- Drawer body -->
+	<div class="flex-1 overflow-y-auto">
 		{#if loading}
 			<div class="flex h-48 items-center justify-center text-zinc-500">Loading...</div>
 		{:else if selectedGoalie}
-			<div class="mb-6">
-				<p class="text-sm font-medium uppercase tracking-widest text-pwhl-light">
-					Goalie · {selectedGoalie.team_name}
-				</p>
-				<h2 class="mt-1 text-3xl font-bold text-white">
-					{selectedGoalie.first_name} {selectedGoalie.last_name}
-				</h2>
+			<!-- Player hero -->
+			<div class="flex items-center gap-4 border-b border-zinc-800 px-5 py-5">
+				{#if photoUrl && !imgError}
+					<img
+						src={photoUrl}
+						alt="{selectedGoalie.first_name} {selectedGoalie.last_name}"
+						onerror={() => (imgError = true)}
+						class="h-20 w-20 flex-shrink-0 rounded-full object-cover ring-2 ring-zinc-700"
+					/>
+				{:else}
+					<div class="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full bg-zinc-800 text-2xl font-bold text-zinc-600 ring-2 ring-zinc-700">
+						{selectedGoalie.first_name[0]}{selectedGoalie.last_name[0]}
+					</div>
+				{/if}
+				<div>
+					<p class="text-xs font-semibold uppercase tracking-widest text-pwhl-light">
+						Goalie · {selectedGoalie.team_name}
+					</p>
+					<h2 class="mt-0.5 text-2xl font-bold text-white">
+						{selectedGoalie.first_name} {selectedGoalie.last_name}
+					</h2>
+				</div>
 			</div>
 
-			<div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+			<div class="space-y-4 p-5">
 				<!-- Record -->
 				<div class="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
 					<p class="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">Record</p>
-					<div class="grid grid-cols-3 gap-y-3 text-center">
+					<div class="grid grid-cols-3 gap-y-4 text-center">
 						<div>
-							<p class="text-xl font-bold text-white">{selectedGoalie.games_played}</p>
+							<p class="text-2xl font-bold text-white">{selectedGoalie.games_played}</p>
 							<p class="text-xs text-zinc-500">GP</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">{selectedGoalie.wins}</p>
+							<p class="text-2xl font-bold text-white">{selectedGoalie.wins}</p>
 							<p class="text-xs text-zinc-500">W</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">{selectedGoalie.losses}</p>
+							<p class="text-2xl font-bold text-white">{selectedGoalie.losses}</p>
 							<p class="text-xs text-zinc-500">L</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">{selectedGoalie.ot_losses}</p>
+							<p class="text-2xl font-bold text-white">{selectedGoalie.ot_losses}</p>
 							<p class="text-xs text-zinc-500">OTL</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">{selectedGoalie.shutouts}</p>
+							<p class="text-2xl font-bold text-white">{selectedGoalie.shutouts}</p>
 							<p class="text-xs text-zinc-500">SO</p>
 						</div>
 					</div>
@@ -249,21 +283,21 @@
 				<!-- Goaltending -->
 				<div class="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
 					<p class="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">Goaltending</p>
-					<div class="grid grid-cols-2 gap-y-3 text-center">
-						<div class="col-span-2">
-							<p class="text-2xl font-bold text-pwhl-light">{formatSvPct(selectedGoalie.save_percentage)}</p>
+					<div class="grid grid-cols-3 gap-y-4 text-center">
+						<div class="col-span-3">
+							<p class="text-3xl font-bold text-pwhl-light">{formatSvPct(selectedGoalie.save_percentage)}</p>
 							<p class="text-xs text-zinc-500">SV%</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">{formatGaa(selectedGoalie.gaa)}</p>
+							<p class="text-2xl font-bold text-white">{formatGaa(selectedGoalie.gaa)}</p>
 							<p class="text-xs text-zinc-500">GAA</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">{selectedGoalie.shots_against}</p>
+							<p class="text-2xl font-bold text-white">{selectedGoalie.shots_against}</p>
 							<p class="text-xs text-zinc-500">SA</p>
 						</div>
 						<div>
-							<p class="text-xl font-bold text-white">{selectedGoalie.goals_against}</p>
+							<p class="text-2xl font-bold text-white">{selectedGoalie.goals_against}</p>
 							<p class="text-xs text-zinc-500">GA</p>
 						</div>
 					</div>
@@ -278,12 +312,12 @@
 							<span class="text-zinc-200">{formatDate(selectedGoalie.birthdate)}</span>
 						</div>
 						<div class="flex justify-between">
-							<span class="text-zinc-500">Nation</span>
+							<span class="text-zinc-500">Nationality</span>
 							<span class="text-zinc-200">{selectedGoalie.nationality ?? '—'}</span>
 						</div>
 						<div class="flex justify-between">
 							<span class="text-zinc-500">Height</span>
-							<span class="text-zinc-200">{selectedGoalie.height ? `${selectedGoalie.height} in` : '—'}</span>
+							<span class="text-zinc-200">{formatHeight(selectedGoalie.height)}</span>
 						</div>
 						<div class="flex justify-between">
 							<span class="text-zinc-500">Weight</span>
@@ -295,15 +329,14 @@
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="mt-5 text-right">
+
 				<a
 					href="/stats/goalies/{selectedGoalieId}"
-					class="text-sm text-pwhl-light hover:underline"
+					class="block w-full rounded-lg border border-zinc-700 py-2.5 text-center text-sm font-medium text-pwhl-light transition-colors hover:border-pwhl-light hover:bg-zinc-900"
 				>
 					View full profile →
 				</a>
 			</div>
 		{/if}
 	</div>
-{/if}
+</div>
