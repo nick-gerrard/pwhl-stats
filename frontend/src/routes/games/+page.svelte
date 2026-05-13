@@ -129,7 +129,7 @@
 		<SeasonSelector seasons={data.allSeasons} class="min-w-0 flex-1 sm:flex-none" />
 		<select
 			bind:value={teamFilter}
-			class="min-w-0 flex-1 rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
+			class="min-w-0 flex-1 rounded border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-zinc-300
 				focus:border-pwhl-light focus:outline-none sm:flex-none"
 		>
 			<option value="">All Teams</option>
@@ -156,7 +156,7 @@
 	{@const expanded = expandedGames.has(gameId)}
 	{@const hasGoals = (live?.goals?.length ?? 0) > 0}
 	<div class="rounded-lg border px-4 py-4
-		{live?.status .startsWith('In Progress') ? 'border-pwhl bg-pwhl-dark/20' : 'border-zinc-800 bg-zinc-900'}">
+		{live?.status .startsWith('In Progress') ? 'border-pwhl bg-pwhl-dark/20' : 'border-white/10 bg-white/5'}">
 		<!-- Mobile layout -->
 		<div class="flex items-center gap-3 sm:hidden">
 			<div class="flex flex-1 flex-col gap-2">
@@ -189,7 +189,7 @@
 						</div>
 						<span class="text-xs text-zinc-500">{live.home_shots}–{live.visitor_shots} SOG</span>
 					{:else}
-						<span class="rounded bg-zinc-700 px-2 py-0.5 text-xs text-zinc-300">Final</span>
+						<span class="rounded bg-white/10 px-2 py-0.5 text-xs text-zinc-300">Final</span>
 					{/if}
 				{:else if score}
 					<span class="text-lg font-bold text-white">{score}</span>
@@ -218,11 +218,11 @@
 							<span class="text-xs text-zinc-300">{live.period} · {tickedClocks[String(game.api_id)] ?? live.clock}</span>
 						</div>
 					{:else}
-						<span class="mt-0.5 rounded bg-zinc-700 px-2 py-0.5 text-xs text-zinc-300">Final</span>
+						<span class="mt-0.5 rounded bg-white/10 px-2 py-0.5 text-xs text-zinc-300">Final</span>
 					{/if}
 				{:else if score}
 					<span class="text-lg font-bold text-white">{score}</span>
-					<span class="mt-0.5 rounded bg-zinc-700 px-2 py-0.5 text-xs text-zinc-300">{game.status}</span>
+					<span class="mt-0.5 rounded bg-white/10 px-2 py-0.5 text-xs text-zinc-300">{game.status}</span>
 				{:else}
 					<span class="text-zinc-400">vs</span>
 					{@const time = formatTime(game.start_time)}
@@ -244,7 +244,7 @@
 		{#if hasGoals}
 			<button
 				onclick={() => toggleExpanded(gameId)}
-				class="mt-3 flex w-full items-center justify-center gap-1 border-t border-zinc-800 pt-3 text-xs text-zinc-500 hover:text-zinc-300">
+				class="mt-3 flex w-full items-center justify-center gap-1 border-t border-white/10 pt-3 text-xs text-zinc-500 hover:text-zinc-300">
 				{expanded ? 'Hide goals ▲' : 'Show goals ▾'}
 			</button>
 			{#if expanded}
@@ -278,7 +278,7 @@
 {#snippet gameCard(game: (typeof data.games)[0], highlight: boolean)}
 	{@const score = formatScore(game.home_score, game.away_score)}
 	<div class="rounded-lg border px-4 py-4
-		{highlight ? 'border-pwhl bg-pwhl-dark/20' : 'border-zinc-800 bg-zinc-900'}">
+		{highlight ? 'border-pwhl bg-pwhl-dark/20' : 'border-white/10 bg-white/5'}">
 		<!-- Mobile layout -->
 		<div class="flex items-center gap-3 sm:hidden">
 			<div class="flex flex-1 flex-col gap-2">
@@ -315,7 +315,7 @@
 				{#if score}
 					<span class="text-lg font-bold text-white">{score}</span>
 					<span class="mt-0.5 rounded px-2 py-0.5 text-xs
-						{game.status === 'Final' ? 'bg-zinc-700 text-zinc-300' : 'bg-pwhl-dark/60 text-pwhl-light'}">
+						{game.status === 'Final' ? 'bg-white/10 text-zinc-300' : 'bg-pwhl-dark/60 text-pwhl-light'}">
 						{game.status}
 					</span>
 				{:else}

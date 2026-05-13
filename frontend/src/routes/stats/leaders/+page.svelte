@@ -76,24 +76,31 @@
 
 <h1 class="mb-8 text-2xl font-bold">Leaders</h1>
 
-{#snippet leaderCard(title: string, players: { name: string; team: string; display: string; href: string }[])}
-	<div class="rounded-xl border border-zinc-800 bg-zinc-900">
-		<div class="border-b border-zinc-800 px-4 py-3">
+{#snippet leaderCard(
+	title: string,
+	players: { name: string; team: string; display: string; href: string }[]
+)}
+	<div class="rounded-xl border border-white/10 bg-white/5">
+		<div class="border-b border-white/10 px-4 py-3">
 			<h3 class="font-semibold text-white">{title}</h3>
 		</div>
 		<ol>
 			{#each players as player, i}
 				<li
 					class="flex items-center gap-3 px-4 py-2.5
-						{i < players.length - 1 ? 'border-b border-zinc-800/50' : ''}
-						{i % 2 === 0 ? '' : 'bg-zinc-950/40'}"
+						{i < players.length - 1 ? 'border-b border-white/10' : ''}
+						{i % 2 === 0 ? '' : 'bg-white/5'}"
 				>
 					<span class="w-5 shrink-0 text-center text-sm text-zinc-500">{i + 1}</span>
 					<div class="min-w-0 flex-1">
-						<a href={player.href} class="truncate text-sm font-medium text-white hover:text-pwhl-light hover:underline">{player.name}</a>
+						<a
+							href={player.href}
+							class="hover:text-pwhl-light truncate text-sm font-medium text-white hover:underline"
+							>{player.name}</a
+						>
 						<p class="truncate text-xs text-zinc-500">{player.team}</p>
 					</div>
-					<span class="shrink-0 text-sm font-bold text-pwhl-light">{player.display}</span>
+					<span class="shrink-0 text-xl font-bold text-white">{player.display}</span>
 				</li>
 			{/each}
 		</ol>

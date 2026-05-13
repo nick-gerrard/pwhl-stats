@@ -14,6 +14,7 @@ async def run():
             season_response = await client.get(seasons_url)
             season_response.raise_for_status()
             seasons = season_response.json()["SiteKit"]["Seasons"]
+            seasons.sort(key=lambda s: s["season_id"], reverse=True)
 
             teams: dict[str, dict] = {}
             for season in seasons:
@@ -21,14 +22,14 @@ async def run():
                 response = await client.get(teams_url)
                 response.raise_for_status()
                 for team in response.json()["SiteKit"]["Teamsbyseason"]:
-                    teams[team["id"]] = {
+                    teams.setdefault(team["id"], {
                         "api_id": team["id"],
                         "name": team["name"],
                         "city": team["city"],
                         "code": team["code"],
                         "nickname": team["nickname"],
                         "logo_url": team["team_logo_url"],
-                    }
+                    })
 
         for team in teams.values():
             await conn.execute(

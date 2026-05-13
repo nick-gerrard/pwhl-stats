@@ -31,10 +31,10 @@
 
 <svelte:window onclick={handleWindowClick} />
 
-<nav class="border-b border-zinc-800 bg-zinc-900">
+<nav class="sticky top-0 z-50 border-b border-white/20 bg-white/5 backdrop-blur-md">
 	<div class="mx-auto max-w-6xl px-4">
 		<div class="flex h-14 items-center justify-between">
-			<a href="/" class="flex items-center gap-2 text-lg font-bold tracking-tight text-pwhl-light">
+			<a href="/" class="text-pwhl-light flex items-center gap-2 text-lg font-bold tracking-tight">
 				<Logo size={28} />
 				PWHL Stats
 			</a>
@@ -48,7 +48,7 @@
 							class="rounded px-3 py-1.5 text-sm transition-colors
 								{page.url.pathname === link.href
 								? 'bg-pwhl text-white'
-								: 'text-zinc-400 hover:bg-zinc-800 hover:text-white'}"
+								: 'text-zinc-400 hover:bg-white/10 hover:text-white'}"
 						>
 							{link.label}
 						</a>
@@ -60,9 +60,7 @@
 					<button
 						onclick={() => (statsOpen = !statsOpen)}
 						class="flex items-center gap-1 rounded px-3 py-1.5 text-sm transition-colors
-							{statsActive
-							? 'bg-pwhl text-white'
-							: 'text-zinc-400 hover:bg-zinc-800 hover:text-white'}"
+							{statsActive ? 'bg-pwhl text-white' : 'text-zinc-400 hover:bg-white/10 hover:text-white'}"
 					>
 						Stats
 						<svg
@@ -80,7 +78,7 @@
 					</button>
 					{#if statsOpen}
 						<div
-							class="absolute right-0 top-full z-50 mt-1 w-40 overflow-hidden rounded-lg border border-zinc-700 bg-zinc-800 shadow-lg"
+							class="absolute top-full right-0 z-50 mt-1 w-40 overflow-hidden rounded-lg border border-white/10 bg-zinc-900 shadow-lg"
 						>
 							{#each statsLinks as link}
 								<a
@@ -89,7 +87,7 @@
 									class="block px-3 py-2 text-sm transition-colors
 										{page.url.pathname === link.href
 										? 'bg-pwhl/20 text-white'
-										: 'text-zinc-300 hover:bg-zinc-700 hover:text-white'}"
+										: 'text-zinc-300 hover:bg-white/10 hover:text-white'}"
 								>
 									{link.label}
 								</a>
@@ -104,7 +102,7 @@
 						class="rounded px-3 py-1.5 text-sm transition-colors
 							{page.url.pathname === '/about'
 							? 'bg-pwhl text-white'
-							: 'text-zinc-400 hover:bg-zinc-800 hover:text-white'}"
+							: 'text-zinc-400 hover:bg-white/10 hover:text-white'}"
 					>
 						About
 					</a>
@@ -114,16 +112,34 @@
 			<!-- Hamburger button -->
 			<button
 				onclick={() => (menuOpen = !menuOpen)}
-				class="flex items-center justify-center rounded p-2 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white sm:hidden"
+				class="flex items-center justify-center rounded p-2 text-zinc-400 transition-colors hover:bg-white/10 hover:text-white sm:hidden"
 				aria-label="Toggle menu"
 			>
 				{#if menuOpen}
-					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-						<path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-5 w-5"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+							clip-rule="evenodd"
+						/>
 					</svg>
 				{:else}
-					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-						<path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-5 w-5"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+							clip-rule="evenodd"
+						/>
 					</svg>
 				{/if}
 			</button>
@@ -132,7 +148,7 @@
 
 	<!-- Mobile menu -->
 	{#if menuOpen}
-		<div class="border-t border-zinc-800 sm:hidden">
+		<div class="border-t border-white/10 sm:hidden">
 			<ul class="flex flex-col px-4 py-2">
 				{#each allLinks as link}
 					<li>
@@ -142,7 +158,7 @@
 							class="block rounded px-3 py-2 text-sm transition-colors
 								{page.url.pathname === link.href
 								? 'bg-pwhl text-white'
-								: 'text-zinc-400 hover:bg-zinc-800 hover:text-white'}"
+								: 'text-zinc-400 hover:bg-white/10 hover:text-white'}"
 						>
 							{link.label}
 						</a>

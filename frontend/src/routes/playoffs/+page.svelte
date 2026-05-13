@@ -30,7 +30,7 @@
 		{#if team.logo_url}
 			<img src={team.logo_url} alt={team.code} class="h-8 w-8 object-contain" />
 		{:else}
-			<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-xs font-bold text-zinc-400">
+			<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-bold text-zinc-400">
 				{team.code}
 			</div>
 		{/if}
@@ -39,7 +39,7 @@
 		</span>
 		<div class="flex gap-1">
 			{#each winPips(wins) as filled}
-				<div class="h-2.5 w-2.5 rounded-full {filled ? 'bg-pwhl-light' : 'bg-zinc-700'}"></div>
+				<div class="h-2.5 w-2.5 rounded-full {filled ? 'bg-pwhl-light' : 'bg-white/20'}"></div>
 			{/each}
 		</div>
 		<span class="w-5 text-right text-sm font-bold tabular-nums {dimmed ? 'text-zinc-600' : 'text-zinc-300'}">
@@ -50,13 +50,13 @@
 
 {#snippet tbdRow()}
 	<div class="flex items-center gap-3 px-4 py-3 opacity-40">
-		<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-zinc-800 text-xs font-bold text-zinc-600">
+		<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-bold text-zinc-600">
 			?
 		</div>
 		<span class="flex-1 text-sm text-zinc-500">TBD</span>
 		<div class="flex gap-1">
 			{#each winPips(0) as _}
-				<div class="h-2.5 w-2.5 rounded-full bg-zinc-800"></div>
+				<div class="h-2.5 w-2.5 rounded-full bg-white/20"></div>
 			{/each}
 		</div>
 		<span class="w-5 text-right text-sm font-bold text-zinc-700">0</span>
@@ -65,8 +65,8 @@
 
 {#snippet seriesCard(series: PlayoffSeries | null, letter: string)}
 	{@const winner = series ? seriesWinner(series) : null}
-	<div class="w-full overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900">
-		<div class="flex items-center gap-2 border-b border-zinc-800 px-3 py-1.5">
+	<div class="w-full overflow-hidden rounded-lg border border-white/10 bg-white/5">
+		<div class="flex items-center gap-2 border-b border-white/10 px-3 py-1.5">
 			<span class="text-xs font-medium text-zinc-500">Series {letter}</span>
 			{#if winner && series}
 				<span class="text-xs text-pwhl-light">
@@ -76,11 +76,11 @@
 		</div>
 		{#if series}
 			{@render teamRow(series.team1, series.team1_wins, winner === 'team2')}
-			<div class="mx-4 border-t border-zinc-800"></div>
+			<div class="mx-4 border-t border-white/10"></div>
 			{@render teamRow(series.team2, series.team2_wins, winner === 'team1')}
 		{:else}
 			{@render tbdRow()}
-			<div class="mx-4 border-t border-zinc-800"></div>
+			<div class="mx-4 border-t border-white/10"></div>
 			{@render tbdRow()}
 		{/if}
 	</div>
@@ -92,7 +92,7 @@
 </div>
 
 {#if !semisRound}
-	<div class="rounded-lg border border-zinc-800 bg-zinc-900 px-6 py-12 text-center">
+	<div class="rounded-lg border border-white/10 bg-white/5 px-6 py-12 text-center">
 		{#if data.hasExplicitSeason}
 			<p class="text-zinc-400">No playoff data available for that season.</p>
 		{:else}
@@ -149,7 +149,7 @@
 			<div class="w-72 shrink-0">
 				{@render seriesCard(semisRound.series[0], semisRound.series[0].series_letter)}
 			</div>
-			<div class="h-px w-16 shrink-0 bg-zinc-700"></div>
+			<div class="h-px w-16 shrink-0 bg-white/20"></div>
 			<div class="w-72 shrink-0">
 				{#if finalsRound}
 					{@render seriesCard(finalsRound.series[0], finalsRound.series[0].series_letter)}
@@ -157,7 +157,7 @@
 					{@render seriesCard(null, 'C')}
 				{/if}
 			</div>
-			<div class="h-px w-16 shrink-0 bg-zinc-700"></div>
+			<div class="h-px w-16 shrink-0 bg-white/20"></div>
 			<div class="w-72 shrink-0">
 				{@render seriesCard(semisRound.series[1], semisRound.series[1].series_letter)}
 			</div>
