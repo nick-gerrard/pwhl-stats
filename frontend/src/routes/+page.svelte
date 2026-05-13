@@ -15,10 +15,10 @@
 </div>
 
 <!-- Desktop table -->
-<div class="hidden overflow-x-auto rounded-lg border border-zinc-800 md:block">
+<div class="hidden overflow-x-auto rounded-lg border border-white/10 bg-white/5 md:block">
 	<table class="w-full text-sm">
 		<thead>
-			<tr class="border-b border-zinc-800 bg-pwhl-dark text-left text-zinc-300">
+			<tr class="border-b border-white/10 bg-pwhl-dark text-left text-zinc-300">
 				<th class="px-4 py-3 font-medium">Team</th>
 				<th class="px-4 py-3 text-center font-medium">GP</th>
 				<th class="px-4 py-3 text-center font-medium">W</th>
@@ -33,9 +33,9 @@
 		</thead>
 		<tbody>
 			{#each data.standings as row, i}
-				<tr class="border-b border-zinc-800 last:border-0 transition-colors
-					{i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}
-					hover:bg-zinc-800">
+				<tr class="border-b border-white/10 last:border-0 transition-colors
+					{i % 2 === 0 ? 'bg-transparent' : 'bg-white/5'}
+					hover:bg-white/10">
 					<td class="px-4 py-3 font-medium text-white">
 						<div class="flex items-center gap-2">
 							{#if row.logo_url}
@@ -45,7 +45,7 @@
 							{#if row.clinched}
 								<span class="rounded bg-green-900/50 px-1.5 py-0.5 text-xs font-semibold text-green-400">C</span>
 							{:else if row.eliminated}
-								<span class="rounded bg-zinc-800 px-1.5 py-0.5 text-xs font-semibold text-zinc-500">E</span>
+								<span class="rounded bg-white/10 px-1.5 py-0.5 text-xs font-semibold text-zinc-500">E</span>
 							{/if}
 						</div>
 					</td>
@@ -65,10 +65,10 @@
 </div>
 
 <!-- Mobile card list -->
-<div class="rounded-lg border border-zinc-800 md:hidden">
+<div class="rounded-lg border border-white/10 bg-white/5 md:hidden">
 	{#each data.standings as row, i}
-		<div class="border-b border-zinc-800 px-4 py-4 last:border-0
-			{i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}">
+		<div class="border-b border-white/10 px-4 py-4 last:border-0
+			{i % 2 === 0 ? 'bg-transparent' : 'bg-white/5'}">
 			<div class="mb-3 flex items-center justify-between">
 				<div class="flex items-center gap-2">
 					{#if row.logo_url}
@@ -78,7 +78,7 @@
 					{#if row.clinched}
 						<span class="rounded bg-green-900/50 px-1.5 py-0.5 text-xs font-semibold text-green-400">C</span>
 					{:else if row.eliminated}
-						<span class="rounded bg-zinc-800 px-1.5 py-0.5 text-xs font-semibold text-zinc-500">E</span>
+						<span class="rounded bg-white/10 px-1.5 py-0.5 text-xs font-semibold text-zinc-500">E</span>
 					{/if}
 				</div>
 				<span class="text-xl font-bold text-white">{row.points} <span class="text-sm font-normal text-zinc-400">PTS</span></span>

@@ -62,7 +62,7 @@
 				src={imageUrl}
 				alt="{player.first_name} {player.last_name}"
 				onerror={() => (imgError = true)}
-				class="h-24 w-24 rounded-full object-cover ring-2 ring-zinc-700"
+				class="h-24 w-24 rounded-full object-cover ring-2 ring-white/20"
 			/>
 		{/if}
 		<div>
@@ -95,10 +95,10 @@
 
 	<!-- Career stats table -->
 	<h2 class="mb-3 text-lg font-semibold text-zinc-300">Career Stats</h2>
-	<div class="overflow-x-auto rounded-lg border border-zinc-800">
+	<div class="overflow-x-auto rounded-lg border border-white/10 bg-white/5">
 		<table class="w-full text-sm">
 			<thead>
-				<tr class="border-b border-zinc-800 bg-pwhl-dark text-left text-zinc-300">
+				<tr class="border-b border-white/10 bg-pwhl-dark text-left text-zinc-300">
 					<th class="px-4 py-3 font-medium">Season</th>
 					<th class="hidden px-4 py-3 font-medium sm:table-cell">Team</th>
 					<th class="px-4 py-3 text-center font-medium">GP</th>
@@ -116,8 +116,8 @@
 			<tbody>
 				{#each career as row, i}
 					<tr
-						class="border-b border-zinc-800 last:border-0
-							{i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}"
+						class="border-b border-white/10 last:border-0
+							{i % 2 === 0 ? 'bg-transparent' : 'bg-white/5'}"
 					>
 						<td class="px-4 py-3 font-medium text-white"
 							>{seasonLabel(row.start_date, row.end_date)}</td
@@ -138,7 +138,7 @@
 					</tr>
 				{/each}
 				{#if career.length > 1}
-					<tr class="border-t-2 border-zinc-700 bg-zinc-900">
+					<tr class="border-t-2 border-white/20 bg-white/10">
 						<td class="px-4 py-3 font-semibold text-zinc-300">Career</td>
 						<td class="hidden px-4 py-3 sm:table-cell"></td>
 						<td class="px-4 py-3 text-center font-semibold text-zinc-300">{totals.games_played}</td>

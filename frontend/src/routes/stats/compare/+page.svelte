@@ -222,18 +222,18 @@
 
 <div class="mb-6 flex items-center justify-between">
 	<h1 class="text-2xl font-bold text-white">Head-to-Head</h1>
-	<div class="flex rounded-lg border border-zinc-700 p-0.5">
+	<div class="flex rounded-lg border border-white/20 p-0.5">
 		<button
 			onclick={() => switchMode('skaters')}
 			class="rounded-md px-4 py-1.5 text-sm font-medium transition-colors
-				{mode === 'skaters' ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-white'}"
+				{mode === 'skaters' ? 'bg-white/20 text-white' : 'text-zinc-400 hover:text-white'}"
 		>
 			Skaters
 		</button>
 		<button
 			onclick={() => switchMode('goalies')}
 			class="rounded-md px-4 py-1.5 text-sm font-medium transition-colors
-				{mode === 'goalies' ? 'bg-zinc-700 text-white' : 'text-zinc-400 hover:text-white'}"
+				{mode === 'goalies' ? 'bg-white/20 text-white' : 'text-zinc-400 hover:text-white'}"
 		>
 			Goalies
 		</button>
@@ -249,13 +249,13 @@
 			onfocus={() => (leftOpen = true)}
 			onblur={() => setTimeout(() => (leftOpen = false), 150)}
 			placeholder="Search {mode}..."
-			class="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-pwhl-light"
+			class="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-pwhl-light"
 		/>
 		{#if leftOpen && leftFiltered.length > 0}
-			<div class="absolute top-full z-10 mt-1 w-64 overflow-hidden rounded-lg border border-zinc-700 bg-zinc-800 shadow-lg">
+			<div class="absolute top-full z-10 mt-1 w-64 overflow-hidden rounded-lg border border-white/20 bg-white/10 shadow-lg">
 				{#each leftFiltered as player}
 					<button
-						class="w-full px-3 py-2 text-left text-sm text-zinc-300 hover:bg-zinc-700 hover:text-white"
+						class="w-full px-3 py-2 text-left text-sm text-zinc-300 hover:bg-white/10 hover:text-white"
 						onmousedown={() => selectLeft(player)}
 					>
 						{player.name}
@@ -273,13 +273,13 @@
 			onfocus={() => (rightOpen = true)}
 			onblur={() => setTimeout(() => (rightOpen = false), 150)}
 			placeholder="Search {mode}..."
-			class="w-full rounded-lg border border-zinc-700 bg-zinc-800 px-3 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-pwhl-light"
+			class="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-pwhl-light"
 		/>
 		{#if rightOpen && rightFiltered.length > 0}
-			<div class="absolute top-full z-10 mt-1 w-64 overflow-hidden rounded-lg border border-zinc-700 bg-zinc-800 shadow-lg">
+			<div class="absolute top-full z-10 mt-1 w-64 overflow-hidden rounded-lg border border-white/20 bg-white/10 shadow-lg">
 				{#each rightFiltered as player}
 					<button
-						class="w-full px-3 py-2 text-left text-sm text-zinc-300 hover:bg-zinc-700 hover:text-white"
+						class="w-full px-3 py-2 text-left text-sm text-zinc-300 hover:bg-white/10 hover:text-white"
 						onmousedown={() => selectRight(player)}
 					>
 						{player.name}
@@ -292,7 +292,7 @@
 
 <!-- Player cards -->
 <div class="mb-6 grid grid-cols-2 gap-4">
-	<div class="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
+	<div class="rounded-lg border border-white/10 bg-white/5 p-4">
 		{#if leftLoading}
 			<p class="text-sm text-zinc-500">Loading...</p>
 		{:else if leftPlayer}
@@ -302,7 +302,7 @@
 						src="https://assets.leaguestat.com/pwhl/240x240/{leftPlayer.api_id}.jpg"
 						alt="{leftPlayer.first_name} {leftPlayer.last_name}"
 						onerror={() => (leftImgError = true)}
-						class="h-20 w-20 rounded-full object-cover ring-2 ring-zinc-700"
+						class="h-20 w-20 rounded-full object-cover ring-2 ring-white/20"
 					/>
 				{/if}
 				<p class="text-xs font-medium uppercase tracking-wider text-pwhl-light">
@@ -318,7 +318,7 @@
 		{/if}
 	</div>
 
-	<div class="rounded-lg border border-zinc-800 bg-zinc-900 p-4">
+	<div class="rounded-lg border border-white/10 bg-white/5 p-4">
 		{#if rightLoading}
 			<p class="text-sm text-zinc-500">Loading...</p>
 		{:else if rightPlayer}
@@ -328,7 +328,7 @@
 						src="https://assets.leaguestat.com/pwhl/240x240/{rightPlayer.api_id}.jpg"
 						alt="{rightPlayer.first_name} {rightPlayer.last_name}"
 						onerror={() => (rightImgError = true)}
-						class="h-20 w-20 rounded-full object-cover ring-2 ring-zinc-700"
+						class="h-20 w-20 rounded-full object-cover ring-2 ring-white/20"
 					/>
 				{/if}
 				<p class="text-xs font-medium uppercase tracking-wider text-pwhl-light">
@@ -347,10 +347,10 @@
 
 <!-- Comparison table -->
 {#if comparisonRows.length > 0}
-	<div class="overflow-x-auto rounded-lg border border-zinc-800">
+	<div class="overflow-x-auto rounded-lg border border-white/10 bg-white/5">
 		<table class="w-full text-sm">
 			<thead>
-				<tr class="border-b border-zinc-800 bg-pwhl-dark text-zinc-300">
+				<tr class="border-b border-white/10 bg-pwhl-dark text-zinc-300">
 					<th class="px-4 py-3 text-right font-medium">
 						{leftPlayer?.first_name}
 						{leftPlayer?.last_name}
@@ -364,7 +364,7 @@
 			</thead>
 			<tbody>
 				{#each comparisonRows as row, i}
-					<tr class="border-b border-zinc-800 last:border-0 {i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}">
+					<tr class="border-b border-white/10 last:border-0 {i % 2 === 0 ? 'bg-transparent' : 'bg-white/5'}">
 						<td class="px-4 py-3 text-right text-base font-bold {isLeftWinner(row) ? 'text-white' : 'text-zinc-400'}">
 							{#if isLeftWinner(row)}<span class="mr-1 text-xs text-pwhl-light">✓</span>{/if}{row.leftDisplay}
 						</td>

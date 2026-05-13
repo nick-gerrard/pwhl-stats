@@ -126,7 +126,7 @@
 		<select
 			bind:value={teamFilter}
 			onchange={() => (currentPage = 1)}
-			class="min-w-0 flex-1 rounded border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-sm text-zinc-300
+			class="min-w-0 flex-1 rounded border border-white/20 bg-white/10 px-3 py-1.5 text-sm text-zinc-300
 				focus:border-pwhl-light focus:outline-none sm:flex-none"
 		>
 			<option value="">All Teams</option>
@@ -137,10 +137,10 @@
 	</div>
 </div>
 
-<div class="overflow-x-auto rounded-lg border border-zinc-800">
+<div class="overflow-x-auto rounded-lg border border-white/10 bg-white/5">
 	<table class="w-full text-sm">
 		<thead>
-			<tr class="border-b border-zinc-800 bg-pwhl-dark text-left text-zinc-300">
+			<tr class="border-b border-white/10 bg-pwhl-dark text-left text-zinc-300">
 				<th class="px-4 py-3 font-medium">
 					<button onclick={() => setSort('last_name')} class="hover:text-white">
 						Player{sortIndicator('last_name')}
@@ -173,9 +173,9 @@
 			{#each paginated as skater, i}
 				<tr
 					onclick={() => openPlayer(skater.player_id)}
-					class="cursor-pointer border-b border-zinc-800 last:border-0 transition-colors
-						{i % 2 === 0 ? 'bg-zinc-950' : 'bg-zinc-900/50'}
-						hover:bg-zinc-800 [&>td]:py-4 sm:[&>td]:py-3"
+					class="cursor-pointer border-b border-white/10 last:border-0 transition-colors
+						{i % 2 === 0 ? 'bg-transparent' : 'bg-white/5'}
+						hover:bg-white/10 [&>td]:py-4 sm:[&>td]:py-3"
 				>
 					<td class="px-4 py-3 font-medium text-white"
 						>{skater.first_name} {skater.last_name}</td
@@ -208,14 +208,14 @@
 
 <!-- Side drawer -->
 <div
-	class="fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-zinc-700 bg-zinc-950
-		shadow-2xl transition-transform duration-300 sm:w-96
+	class="fixed inset-y-0 right-0 z-50 flex w-full flex-col border-l border-white/20 bg-zinc-900/80
+		shadow-2xl backdrop-blur-xl transition-transform duration-300 sm:w-96
 		{drawerOpen ? 'translate-x-0' : 'translate-x-full'}"
 	role="dialog"
 	aria-modal="true"
 >
 	<!-- Drawer header -->
-	<div class="flex items-center justify-between border-b border-zinc-800 px-5 py-4">
+	<div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
 		<span class="text-sm font-semibold uppercase tracking-wider text-zinc-400">Player Details</span>
 		<button
 			onclick={closeDrawer}
@@ -234,16 +234,16 @@
 			<div class="flex h-48 items-center justify-center text-zinc-500">Loading...</div>
 		{:else if selectedPlayer}
 			<!-- Player hero -->
-			<div class="flex items-center gap-4 border-b border-zinc-800 px-5 py-5">
+			<div class="flex items-center gap-4 border-b border-white/10 px-5 py-5">
 				{#if photoUrl && !imgError}
 					<img
 						src={photoUrl}
 						alt="{selectedPlayer.first_name} {selectedPlayer.last_name}"
 						onerror={() => (imgError = true)}
-						class="h-20 w-20 flex-shrink-0 rounded-full object-cover ring-2 ring-zinc-700"
+						class="h-20 w-20 flex-shrink-0 rounded-full object-cover ring-2 ring-white/20"
 					/>
 				{:else}
-					<div class="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full bg-zinc-800 text-2xl font-bold text-zinc-600 ring-2 ring-zinc-700">
+					<div class="flex h-20 w-20 flex-shrink-0 items-center justify-center rounded-full bg-white/10 text-2xl font-bold text-white/40 ring-2 ring-white/20">
 						{selectedPlayer.first_name[0]}{selectedPlayer.last_name[0]}
 					</div>
 				{/if}
@@ -259,7 +259,7 @@
 
 			<div class="space-y-4 p-5">
 				<!-- Season stats -->
-				<div class="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+				<div class="rounded-xl border border-white/10 bg-white/5 p-4">
 					<p class="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">Season</p>
 					<div class="grid grid-cols-3 gap-y-4 text-center">
 						<div>
@@ -294,7 +294,7 @@
 				</div>
 
 				<!-- Shooting -->
-				<div class="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+				<div class="rounded-xl border border-white/10 bg-white/5 p-4">
 					<p class="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">Shooting</p>
 					<div class="grid grid-cols-3 gap-y-4 text-center">
 						<div>
@@ -317,7 +317,7 @@
 				</div>
 
 				<!-- Profile -->
-				<div class="rounded-xl border border-zinc-800 bg-zinc-900 p-4">
+				<div class="rounded-xl border border-white/10 bg-white/5 p-4">
 					<p class="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">Profile</p>
 					<div class="space-y-2.5 text-sm">
 						<div class="flex justify-between">
@@ -345,7 +345,7 @@
 
 				<a
 					href="/stats/skaters/{selectedPlayerId}"
-					class="block w-full rounded-lg border border-zinc-700 py-2.5 text-center text-sm font-medium text-pwhl-light transition-colors hover:border-pwhl-light hover:bg-zinc-900"
+					class="block w-full rounded-lg border border-white/20 py-2.5 text-center text-sm font-medium text-pwhl-light transition-colors hover:border-pwhl-light hover:bg-white/10"
 				>
 					View full profile →
 				</a>
