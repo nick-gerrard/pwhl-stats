@@ -84,6 +84,8 @@ async def run():
                                 )
                                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                                 ON CONFLICT (season_id, series_letter) DO UPDATE SET
+                                    team1_id = EXCLUDED.team1_id,
+                                    team2_id = EXCLUDED.team2_id,
                                     team1_wins = EXCLUDED.team1_wins,
                                     team2_wins = EXCLUDED.team2_wins,
                                     is_active = EXCLUDED.is_active
