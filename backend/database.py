@@ -13,13 +13,16 @@ async def get_conn():
 
 async def get_current_season(conn) -> tuple[int, int]:
     """
-    Returns (internal_id, api_id) of the current active season.
-    Raises RuntimeError if no active season is found.
+    Returns (internal_id, api_id) of the most recent regular or playoff season that has
+    started. Preseasons are skipped (they have no schedule data), and seasons that start
+    in the future are ignored, so between seasons this is the one that just finished.
+    Raises RuntimeError if no season has started yet.
     """
     async with conn.cursor() as cur:
         await cur.execute(
-            "SELECT id, api_id FROM seasons WHERE start_date <= %s AND end_date >= %s",
-            (date.today(), date.today()),
+            "SELECT id, api_id FROM seasons WHERE season_type <> 'preseason' AND start_date <= %s "
+            "ORDER BY start_date DESC LIMIT 1",
+            (date.today(),),
         )
         season = await cur.fetchone()
         if season is None:
@@ -29,16 +32,23 @@ async def get_current_season(conn) -> tuple[int, int]:
 
 async def get_current_regular_season_id(conn) -> int:
     """
-    Returns most recent regular season id in the db.
+    Returns the most recent regular season that has started (ignores future seasons,
+    which are published months before they have any stats).
     """
+    season = await _latest_started_regular_season(conn)
+    if season is None:
+        raise RuntimeError("No season found in database.")
+    return season[0]
+
+
+async def _latest_started_regular_season(conn) -> tuple[int, date] | None:
     async with conn.cursor() as cur:
         await cur.execute(
-            "SELECT id FROM seasons WHERE season_type = 'regular' ORDER BY start_date DESC LIMIT 1"
+            "SELECT id, start_date FROM seasons WHERE season_type = 'regular' AND start_date <= %s "
+            "ORDER BY start_date DESC LIMIT 1",
+            (date.today(),),
         )
-        season = await cur.fetchone()
-        if season is None:
-            raise RuntimeError("No season found in database.")
-        return season[0]
+        return await cur.fetchone()
 
 
 async def get_current_playoff_season_id(conn) -> int | None:
@@ -57,15 +67,12 @@ async def get_current_playoff_season_id(conn) -> int | None:
             return None
         playoff_id, playoff_end = playoff
 
-        await cur.execute(
-            "SELECT start_date FROM seasons WHERE season_type = 'regular' ORDER BY start_date DESC LIMIT 1"
-        )
-        regular = await cur.fetchone()
+        regular = await _latest_started_regular_season(conn)
         if regular is None:
             return playoff_id
 
         # Playoff ended before the current regular season started → belongs to last cycle
-        if playoff_end < regular[0]:
+        if playoff_end < regular[1]:
             return None
         return playoff_id
 
